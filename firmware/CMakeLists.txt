@@ -31,7 +31,7 @@ add_executable(${PROJECT_NAME}
     drivers/pico/i2c/src/pico_i2c_driver.cpp
 )
 
-pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/pio/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/build/generated/pio)
+pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/pio/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/../build/generated/pio)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     inc/

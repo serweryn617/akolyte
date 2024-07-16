@@ -1,8 +1,6 @@
 # Cooking recipe, checkout Cook at https://github.com/serweryn617/cook
 
-from cook.build import BuildStep, LocalBuildServer, RemoteBuildServer, Responder
-from cook.cli import settings
-from cook.sync import SyncDirectory, SyncExclude, SyncFile
+from cook.build import BuildStep, LocalBuildServer
 
 
 default_build_server = 'local'
@@ -28,16 +26,16 @@ projects = {
         ],
 
         'build_steps': [
-            BuildStep(workdir='firmware', command='mkdir -p build'),
-            BuildStep(workdir='firmware', command='mkdir -p build/generated/pio'),
+            BuildStep(command='mkdir -p build'),
+            BuildStep(workdir='build', command='mkdir -p generated/pio'),
 
-            BuildStep(workdir='firmware/build', command='cmake .. -DSIDE=0'),
-            BuildStep(workdir='firmware/build', command='cmake --build . -j'),
-            BuildStep(command='cp firmware/build/keypad.uf2 keypad_left.uf2'),
+            BuildStep(workdir='build', command='cmake ../firmware -DSIDE=0'),
+            BuildStep(workdir='build', command='cmake --build . -j'),
+            BuildStep(command='cp build/keypad.uf2 keypad_left.uf2'),
 
-            BuildStep(workdir='firmware/build', command='cmake .. -DSIDE=1'),
-            BuildStep(workdir='firmware/build', command='cmake --build . -j'),
-            BuildStep(command='cp firmware/build/keypad.uf2 keypad_right.uf2'),
+            BuildStep(workdir='build', command='cmake ../firmware -DSIDE=1'),
+            BuildStep(workdir='build', command='cmake --build . -j'),
+            BuildStep(command='cp build/keypad.uf2 keypad_right.uf2'),
         ],
     },
 
@@ -47,7 +45,7 @@ projects = {
         ],
 
         'build_steps': [
-            BuildStep(command='cp firmware/build/compile_commands.json .vscode/compile_commands.json'),
+            BuildStep(command='cp build/compile_commands.json .vscode/compile_commands.json'),
         ],
     }
 }
