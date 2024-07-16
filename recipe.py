@@ -43,9 +43,9 @@ projects['copy_compile_commands'] = local_build_from_list([
 
 
 projects['init_submodules'] = local_build_from_list([
-    'git submodule update --init --depth 1 sdk/pico-sdk',
+    ('sdk', 'git submodule update --init --depth 1 pico-sdk'),
     'git submodule status',
 
-    'git submodule update --init --depth 1 sdk/pico-sdk/lib/tinyusb',
+    ('sdk/pico-sdk/lib', 'git submodule update --init --depth 1 tinyusb'),
     'git submodule status',
 ])
