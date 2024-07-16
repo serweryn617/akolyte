@@ -40,3 +40,12 @@ projects['firmware'] = local_build_from_list([
 projects['copy_compile_commands'] = local_build_from_list([
     'cp build/compile_commands.json .vscode/compile_commands.json'
 ])
+
+
+projects['init_submodules'] = local_build_from_list([
+    'git submodule update --init --depth 1 sdk/pico-sdk',
+    'git submodule status',
+
+    'git submodule update --init --depth 1 sdk/pico-sdk/lib/tinyusb',
+    'git submodule status',
+])
