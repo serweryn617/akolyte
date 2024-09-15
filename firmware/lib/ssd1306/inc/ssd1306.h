@@ -2,17 +2,16 @@
 #include <string>
 
 #include "pico/stdlib.h"
-#include "hardware/i2c.h"
-
+#include "pico_i2c_driver.h"
 
 constexpr uint8_t oledWidth = 128;
 constexpr uint8_t oledHeight = 32;
-constexpr uint8_t oledPages = 4;
+constexpr uint8_t oledPages = oledHeight / 8;
 
 class ssd1306
 {
 public:
-    ssd1306();
+    ssd1306(drivers::pico::PicoI2CDriver &i2c_driver_) : i2c_driver(i2c_driver_) {};
     ~ssd1306() {};
 
     void init();
@@ -28,12 +27,8 @@ public:
     void set_cursor(uint8_t, uint8_t);
 
 private:
-    i2c_inst_t *i2c = i2c0;
-    uint sda_pin = 0;
-    uint scl_pin = 1;
-    uint8_t address = 0b111100;  // LSB=0 -> write
-
+    drivers::pico::PicoI2CDriver &i2c_driver;
     bool displayBuffer[oledWidth][oledHeight];
-    uint8_t cursor_x;
-    uint8_t cursor_y;
+    uint8_t cursor_x = 0;
+    uint8_t cursor_y = 0;
 };

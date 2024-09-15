@@ -1,30 +1,16 @@
 #include "ssd1306.h"
 #include "font.h"
 
-ssd1306::ssd1306()
-    : cursor_x(0), cursor_y(0)
-{
-}
-
-void ssd1306::io_init()
-{
-    i2c_init(i2c, 100 * 1000);
-    gpio_set_function(sda_pin, GPIO_FUNC_I2C);
-    gpio_set_function(scl_pin, GPIO_FUNC_I2C);
-    gpio_pull_up(sda_pin);
-    gpio_pull_up(scl_pin);
-}
-
 void ssd1306::write_command(uint8_t cmd)
 {
-    uint8_t command[2] = {0x80, cmd};
-    i2c_write_blocking(i2c, address, command, sizeof(command), false);
+    uint8_t command_bytes[2] = {0x80, cmd};
+    i2c_driver.write_data(command_bytes, sizeof(command_bytes));
 }
 
 void ssd1306::write_data(uint8_t data)
 {
-    uint8_t data_op[2] = {0x40, data};
-    i2c_write_blocking(i2c, address, data_op, sizeof(data_op), false);
+    uint8_t data_bytes[2] = {0x40, data};
+    i2c_driver.write_data(data_bytes, sizeof(data_bytes));
 }
 
 void ssd1306::init()

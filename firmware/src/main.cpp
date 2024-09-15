@@ -3,7 +3,7 @@
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 
-#include "../drivers/pico/i2c/inc/pico_i2c_driver.h"
+#include "pico_i2c_driver.h"
 #include "defs.hpp"
 #include "keypad.hpp"
 #include "led.hpp"
@@ -24,8 +24,10 @@ tinyusb_callback g_tinyusb_callback {
 
 void core1_main()
 {
-    ssd1306 oled;
-    oled.io_init();
+    drivers::pico::PicoI2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
+    i2c_driver.init();
+
+    ssd1306 oled(i2c_driver);
     oled.init();
 
     while (true)
