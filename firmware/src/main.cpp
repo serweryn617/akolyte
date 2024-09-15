@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "pico/stdlib.h"
+#include "pico/multicore.h"
 
 #include "../drivers/pico/i2c/inc/pico_i2c_driver.h"
 #include "defs.hpp"
@@ -12,6 +13,7 @@
 #include "usb_manager.hpp"
 #include "i2c_worker.hpp"
 #include "logger.hpp"
+#include "ssd1306.h"
 
 tinyusb_callback g_tinyusb_callback {
     .complete = true,
@@ -20,8 +22,28 @@ tinyusb_callback g_tinyusb_callback {
     .suspended = false,
 };
 
+void core1_main()
+{
+    ssd1306 oled;
+    oled.io_init();
+    oled.init();
+
+    while (true)
+    {
+        oled.fill(1);
+        oled.display();
+        sleep_ms(500);
+
+        oled.fill(0);
+        oled.display();
+        sleep_ms(500);
+    }
+}
+
 int main()
 {
+    multicore_launch_core1(core1_main);
+
     Logger log;
     log.set_on(true);
 

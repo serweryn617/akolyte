@@ -43,12 +43,14 @@ add_subdirectory(lib)
 # Link to pico_stdlib (gpio, time, etc. functions)
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
+    pico_multicore
     hardware_i2c
     pico_i2c_slave
     hardware_pio
     tinyusb
     tinyusb_board
     tinyusb_device # TODO: Can this be omitted?
+    ssd1306
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SIDE=${SIDE})
@@ -60,7 +62,7 @@ pico_sdk_init()
 # pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Disable uart output, as it uses pins 0 and 1
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
+# pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Create map/bin/hex/uf2 files
 pico_add_extra_outputs(${PROJECT_NAME})
