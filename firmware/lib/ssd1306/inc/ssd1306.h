@@ -15,20 +15,17 @@ public:
     ~ssd1306() {};
 
     void init();
-    void io_init();
-    void write_command(uint8_t);
-    void write_data(uint8_t);
-    void set_staring_column();
-    void fill(bool);
-    void set_pixel(uint8_t, uint8_t, bool);
-    void print_char(uint8_t);
-    void print_string(std::string);
+    void write_command(uint8_t cmd);
+    void fill(bool val);
+    void set_pixel(uint8_t x, uint8_t y, bool val);
+    void print_char(uint8_t c);
+    void print_string(std::string str);
     void display();
-    void set_cursor(uint8_t, uint8_t);
+    void set_cursor(uint8_t x, uint8_t y);
 
 private:
     drivers::pico::PicoI2CDriver &i2c_driver;
-    bool displayBuffer[oledWidth][oledHeight];
+    uint8_t displayBuffer[oledPages][oledWidth];
     uint8_t cursor_x = 0;
     uint8_t cursor_y = 0;
 };

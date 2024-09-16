@@ -30,16 +30,11 @@ void core1_main()
     ssd1306 oled(i2c_driver);
     oled.init();
 
-    while (true)
-    {
-        oled.fill(1);
-        oled.display();
-        sleep_ms(500);
+    oled.set_cursor(0, 0);
+    oled.print_string("test...");
+    oled.display();
 
-        oled.fill(0);
-        oled.display();
-        sleep_ms(500);
-    }
+    while(true);
 }
 
 int main()
