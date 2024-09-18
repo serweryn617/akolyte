@@ -28,7 +28,6 @@ add_executable(${PROJECT_NAME}
     src/usb_manager.cpp
     src/i2c_worker.cpp
     src/logger.cpp
-    drivers/pico/i2c/src/pico_i2c_driver.cpp
 )
 
 pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/pio/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/../build/generated/pio)
@@ -38,17 +37,21 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     build/generated/pio/
 )
 
+add_subdirectory(drivers)
 add_subdirectory(lib)
 
 # Link to pico_stdlib (gpio, time, etc. functions)
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
+    pico_multicore
     hardware_i2c
     pico_i2c_slave
     hardware_pio
     tinyusb
     tinyusb_board
     tinyusb_device # TODO: Can this be omitted?
+    ssd1306
+    pico_i2c_driver
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SIDE=${SIDE})
@@ -60,7 +63,7 @@ pico_sdk_init()
 # pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Disable uart output, as it uses pins 0 and 1
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
+# pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Create map/bin/hex/uf2 files
 pico_add_extra_outputs(${PROJECT_NAME})

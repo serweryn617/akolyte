@@ -1,4 +1,4 @@
-#include "../inc/pico_i2c_driver.h"
+#include "pico_i2c_driver.h"
 #include "pico/i2c_slave.h"
 
 namespace drivers::pico {
@@ -37,7 +37,7 @@ void PicoI2CDriver::init()
     gpio_pull_up(pin_scl_);
 }
 
-int PicoI2CDriver::read_data(uint8_t *buffer, uint8_t length, uint32_t timeout)
+int PicoI2CDriver::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout)
 {
     if (timeout) {
         return i2c_read_timeout_us(i2c_inst_, i2c_address_, buffer, length, false, timeout);
@@ -46,7 +46,7 @@ int PicoI2CDriver::read_data(uint8_t *buffer, uint8_t length, uint32_t timeout)
     }
 }
 
-int PicoI2CDriver::write_data(const uint8_t *buffer, uint8_t length, uint32_t timeout)
+int PicoI2CDriver::write_data(const uint8_t *buffer, uint32_t length, uint32_t timeout)
 {
     if (timeout) {
         return i2c_write_timeout_us(i2c_inst_, i2c_address_, buffer, length, false, timeout);

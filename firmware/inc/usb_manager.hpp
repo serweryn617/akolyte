@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pico/stdlib.h"
-#include "../drivers/pico/i2c/inc/pico_i2c_driver.h"
+#include "pico_i2c_driver.h"
 #include "hid_keycodes.hpp"
 #include "led.hpp"
 #include "tinyusb.hpp"

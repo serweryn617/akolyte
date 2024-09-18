@@ -18,8 +18,8 @@ public:
     PicoI2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uint8_t i2c_address);
 
     void init();
-    int read_data(uint8_t *buffer, uint8_t length = 1, uint32_t timeout = 0);
-    int write_data(const uint8_t *buffer, uint8_t length = 1, uint32_t timeout = 0);
+    int read_data(uint8_t *buffer, uint32_t length = 1, uint32_t timeout = 0);
+    int write_data(const uint8_t *buffer, uint32_t length = 1, uint32_t timeout = 0);
     void set_slave_mode(bool is_slave);
     bool slave_requested();
     void clear_slave_request();
