@@ -92,15 +92,11 @@ void ssd1306::fill(bool val)
 
 void ssd1306::print_char(uint8_t c)
 {
-
-    for (size_t half = 0; half < 2; half++)
+    for (size_t cx = 0; cx < 5; cx++)
     {
-        for (size_t cx = 0; cx < 10; cx++)
+        for (size_t cy = 0; cy < 8; cy++)
         {
-            for (size_t cy = 0; cy < 8; cy++)
-            {
-                set_pixel(cursor_x + cx, cursor_y + half * 8 + cy, (ascii_16x[c - 32][half * 10 + cx] >> cy) & 0b1);
-            }
+            set_pixel(cursor_x + cx, cursor_y + cy, (ascii_8x[c - 32][cx] >> cy) & 0b1);
         }
     }
 }
@@ -110,6 +106,6 @@ void ssd1306::print_string(std::string str)
     for (auto &&c : str)
     {
         print_char(c);
-        cursor_x += 12;
+        cursor_x += 6;
     }
 }

@@ -3,7 +3,7 @@ from PIL import Image
 from math import ceil
 
 image_path = "chars_8.png"
-num_chars = 96
+num_chars = 98
 img_cols = 16
 border = 1
 
@@ -30,4 +30,4 @@ for n in range(num_chars):
                 column |= (1 << y)
         data.append(column)
 
-    print('{' + ', '.join([hex(d) for d in data]) + '},')
+    print('{' + ', '.join([f'0x{d:02x}' for d in data]) + '},')
