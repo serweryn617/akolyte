@@ -6,7 +6,6 @@
 #include "tinyusb.hpp"
 #include "types.h"
 #include "keypad/keypad.hpp"
-#include "logger.hpp"
 #include <array>
 
 class usb_manager
@@ -24,10 +23,9 @@ private:
     drivers::i2c::I2CDriver &i2c_driver;
     tinyusb_callback &tusb_cb;
     lib::keypad::Keypad &keypad;
-    Logger &log;
 
 public:
-    usb_manager(TinyUSB &_tinyusb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, lib::keypad::Keypad &_keypad, Logger &_log);
+    usb_manager(TinyUSB &_tinyusb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, lib::keypad::Keypad &_keypad);
     void loop();
 
     void get_state();

@@ -5,14 +5,13 @@
 #include "pico/util/queue.h"
 
 #include "i2c/i2c_driver.h"
-#include "defs.hpp"
+#include "akolyte/defs.hpp"
 #include "keypad/keypad.hpp"
 #include "tinyusb.hpp"
 #include "types.h"
-#include "flow_selector.hpp"
-#include "usb_manager.hpp"
-#include "i2c_worker.hpp"
-#include "logger.hpp"
+#include "akolyte/flow_selector.hpp"
+#include "akolyte/usb_manager.hpp"
+#include "akolyte/i2c_worker.hpp"
 #include "ssd1306.h"
 
 using namespace lib::keypad;
@@ -67,21 +66,15 @@ int main()
     queue_init(&inter_core_queue, sizeof(uint8_t), 16);
     multicore_launch_core1(core1_main);
 
-    Logger log;
-    log.set_on(true);
-
     TinyUSB t_usb(global_tinyusb_callback);
     drivers::i2c::I2CDriver i2c_driver(i2c1, ext_i2c_sda, ext_i2c_scl, 0x55);
     Keypad keypad(keypad_in_pins, keypad_out_pins);
 
     keypad.init_gpio();
 
-    usb_manager manager(t_usb, i2c_driver, global_tinyusb_callback, keypad, log);
+    usb_manager manager(t_usb, i2c_driver, global_tinyusb_callback, keypad);
     i2c_worker worker(i2c_driver, keypad);
-
-    flow_selector selector(t_usb, i2c_driver, inter_core_queue, global_tinyusb_callback, manager, worker, log);
-
-    log.print("Starting\r\n");
+    flow_selector selector(t_usb, i2c_driver, inter_core_queue, global_tinyusb_callback, manager, worker);
 
     selector.init_all();
     selector.start();

@@ -6,12 +6,10 @@ target_include_directories(i2c_driver PUBLIC
     inc/
 )
 
-# TODO: Why public include?
-target_link_libraries(i2c_driver PUBLIC
+target_link_libraries(i2c_driver
+PUBLIC
     hardware_i2c
-)
-
-target_link_libraries(i2c_driver PRIVATE
+PRIVATE
     pico_i2c_slave
     pico_stdlib
 )

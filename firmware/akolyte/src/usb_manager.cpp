@@ -1,15 +1,14 @@
-#include "usb_manager.hpp"
-#include "keycodes.hpp"
+#include "akolyte/usb_manager.hpp"
+#include "akolyte/keycodes.hpp"
 
 using namespace drivers::i2c;
 using namespace lib::keypad;
 
-usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad, Logger &_log)
+usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad)
     : tinyusb(_tinyusb)
     , i2c_driver(_i2c_driver)
     , tusb_cb(_tusb_cb)
     , keypad(_keypad)
-    , log(_log)
 {
 }
 
@@ -88,8 +87,6 @@ void usb_manager::update_layers()
 
 void usb_manager::loop()
 {
-    log.print("entering usb_manager::loop\r\n");
-
     uint64_t timestamp = time_us_64();
 
     while (true) {
@@ -110,22 +107,16 @@ void usb_manager::loop()
             process_keys(state_right, changed_right, layers[layer].key_r);
         }
 
-        log.print("dt ");
         tinyusb.device_task();
-        log.print("ht ");
         tinyusb.hid_task();
-        log.print("OK ");
 
         state_left_previous = state_left;
         state_right_previous = state_right;
 
-        log.print("m? ");
         if (!tinyusb.ready()) {
-            log.print("\r\nunmounted, breaking\r\n");
             break;
         }
 
-        log.print("d\r\n");
         while (time_us_64() < timestamp + 1000);
         timestamp = time_us_64();
         // 3us for voltage on button to drop to 0.18V
