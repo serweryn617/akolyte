@@ -1,10 +1,10 @@
 #include "i2c_worker.hpp"
 
+using namespace lib::keypad;
 
-i2c_worker::i2c_worker(drivers::pico::PicoI2CDriver &_i2c_driver, Keypad &_keypad, Led &_led)
+i2c_worker::i2c_worker(drivers::i2c::I2CDriver &_i2c_driver, Keypad &_keypad)
     : i2c_driver(_i2c_driver)
     , keypad(_keypad)
-    , led(_led)
 {
 }
 

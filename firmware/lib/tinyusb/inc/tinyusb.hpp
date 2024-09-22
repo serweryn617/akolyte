@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../inc/hid_keycodes.hpp"
+#include "hid_keycodes.hpp"
 #include "pico/stdlib.h"
-#include "../../../inc/types.h"
+#include "types.h"
 
 constexpr int num_keycodes = 12;
 

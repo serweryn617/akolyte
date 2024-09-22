@@ -72,10 +72,10 @@ projects['build_firmware_docker'] = {
         'mkdir -p build/generated/pio',
 
         BuildStep(command=docker_command("cd /workspace/build && cmake ../firmware -DSIDE=0 && cmake --build . -j")),
-        BuildStep(command='cp build/keypad.uf2 keypad_left.uf2'),
+        BuildStep(command='cp build/akolyte/akolyte.uf2 akolyte_left.uf2'),
 
         BuildStep(command=docker_command("cd /workspace/build && cmake ../firmware -DSIDE=1 && cmake --build . -j")),
-        BuildStep(command='cp build/keypad.uf2 keypad_right.uf2'),
+        BuildStep(command='cp build/akolyte/akolyte.uf2 akolyte_right.uf2'),
     ],
 }
 
@@ -86,11 +86,11 @@ projects['build_firmware'] = [
 
     ('build', 'cmake ../firmware -DSIDE=0'),
     ('build', 'cmake --build . -j'),
-    'cp build/keypad.uf2 keypad_left.uf2',
+    'cp build/akolyte/akolyte.uf2 akolyte_left.uf2',
 
     ('build', 'cmake ../firmware -DSIDE=1'),
     ('build', 'cmake --build . -j'),
-    'cp build/keypad.uf2 keypad_right.uf2',
+    'cp build/akolyte/akolyte.uf2 akolyte_right.uf2',
 ]
 
 

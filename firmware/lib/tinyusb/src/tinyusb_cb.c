@@ -2,10 +2,10 @@
 
 #include "tusb.h"
 #include "usb_descriptors.h"
-#include "../../../inc/types.h"
+#include "types.h"
 
 // TinyUSB callback functions
-extern tinyusb_callback g_tinyusb_callback;
+extern tinyusb_callback global_tinyusb_callback;
 
 // Invoked when sent REPORT successfully to host
 // Application can use this to send the next report
@@ -15,7 +15,7 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint16_
     (void)instance;
     (void)len;
 
-    g_tinyusb_callback.complete = true;
+    global_tinyusb_callback.complete = true;
 }
 
 // Invoked when received GET_REPORT control request
@@ -45,7 +45,7 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             return;
         }
 
-        g_tinyusb_callback.leds = buffer[0];
+        global_tinyusb_callback.leds = buffer[0];
     }
 }
 
@@ -56,13 +56,13 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 // Invoked when device is mounted
 void tud_mount_cb(void)
 {
-    g_tinyusb_callback.mounted = true;
+    global_tinyusb_callback.mounted = true;
 }
 
 // Invoked when device is unmounted
 void tud_umount_cb(void)
 {
-    g_tinyusb_callback.mounted = false;
+    global_tinyusb_callback.mounted = false;
 }
 
 // Invoked when usb bus is suspended
@@ -71,11 +71,11 @@ void tud_umount_cb(void)
 void tud_suspend_cb(bool remote_wakeup_en)
 {
   (void) remote_wakeup_en;
-  g_tinyusb_callback.suspended = true;
+  global_tinyusb_callback.suspended = true;
 }
 
 // Invoked when usb bus is resumed
 void tud_resume_cb(void)
 {
-  g_tinyusb_callback.suspended = false;
+  global_tinyusb_callback.suspended = false;
 }

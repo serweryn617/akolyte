@@ -1,22 +1,26 @@
 #include "pico/stdlib.h"
-#include "keypad.hpp"
-#include "defs.hpp"
+#include "keypad/keypad.hpp"
 
-Keypad::Keypad()
+namespace lib::keypad {
+
+Keypad::Keypad(const std::array<uint, 5UL> &in_pins_, const std::array<uint, 6UL> &out_pins_)
+    : in_pins(in_pins_)
+    , out_pins(out_pins_)
 {
 }
 
 void Keypad::init_gpio()
 {
-    for (auto &&pin : keypad_in_pins) {
+    for (auto &&pin : in_pins) {
         gpio_init(pin);
         gpio_set_dir(pin, false);
         gpio_pull_down(pin);
     }
 
-    for (auto &&pin : keypad_out_pins) {
+    for (auto &&pin : out_pins) {
         gpio_init(pin);
         gpio_set_dir(pin, true);
+        gpio_put(pin, false);
     }
 }
 
@@ -24,25 +28,20 @@ uint32_t Keypad::get_state()
 {
     uint32_t state = 0;
 
-    // Columns
     for (size_t col = 0; col < 6; col++) {
-        // Clear columns
-        for (auto &&pin : keypad_out_pins) {
-            gpio_put(pin, false);
-        }
-        sleep_us(1);
-
-        // Set i-th column
-        auto ith_col_pin = keypad_out_pins[col];
+        auto ith_col_pin = out_pins[col];
         gpio_put(ith_col_pin, true);
         sleep_us(1);
 
-        // Read rows
         for (size_t row = 0; row < 5; row++) {
-            auto jth_row_pin = keypad_in_pins[row];
+            auto jth_row_pin = in_pins[row];
             state |= gpio_get(jth_row_pin) << (row * 6 + col);
         }
+
+        gpio_put(ith_col_pin, false);
     }
 
     return state;
 }
+
+}  // namespace lib::keypad

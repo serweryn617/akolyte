@@ -1,12 +1,12 @@
-#ifndef PICO_I2C_DRIVER_H
-#define PICO_I2C_DRIVER_H
+#ifndef DRIVERS_I2C_I2C_DRIVER_H
+#define DRIVERS_I2C_I2C_DRIVER_H
 
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 
-namespace drivers::pico {
+namespace drivers::i2c {
 
-class PicoI2CDriver
+class I2CDriver
 {
 private:
     i2c_inst_t *i2c_inst_;
@@ -15,7 +15,7 @@ private:
     uint8_t pin_scl_;
 
 public:
-    PicoI2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uint8_t i2c_address);
+    I2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uint8_t i2c_address);
 
     void init();
     int read_data(uint8_t *buffer, uint32_t length = 1, uint32_t timeout = 0);
@@ -28,6 +28,6 @@ public:
     uint8_t slave_get_byte();
 };
 
-}  // namespace drivers::pico
+}  // namespace drivers::i2c
 
-#endif  // PICO_I2C_DRIVER_H
+#endif  // DRIVERS_I2C_I2C_DRIVER_H

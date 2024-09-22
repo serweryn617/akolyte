@@ -1,10 +1,9 @@
 #include "flow_selector.hpp"
 
-flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::pico::PicoI2CDriver &_i2c_driver, queue_t &inter_core_queue_, Led &_led, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker, Logger &_log)
+flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::i2c::I2CDriver &_i2c_driver, queue_t &inter_core_queue_, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker, Logger &_log)
     : tiny_usb(_tiny_usb)
     , i2c_driver(_i2c_driver)
     , inter_core_queue(inter_core_queue_)
-    , led(_led)
     , tusb_cb(_tusb_cb)
     , manager(_manager)
     , worker(_worker)
@@ -15,7 +14,6 @@ flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::pico::PicoI2CDriver &_
 void flow_selector::init_all()
 {
     tiny_usb.init();
-    led.init();
     i2c_driver.init();
     i2c_driver.set_slave_mode(true);
 }

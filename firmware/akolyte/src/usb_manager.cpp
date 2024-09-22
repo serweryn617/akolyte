@@ -1,25 +1,16 @@
 #include "usb_manager.hpp"
 #include "keycodes.hpp"
 
-using drivers::pico::PicoI2CDriver;
+using namespace drivers::i2c;
+using namespace lib::keypad;
 
-usb_manager::usb_manager(TinyUSB &_tinyusb, PicoI2CDriver &_i2c_driver, Led &_led, tinyusb_callback &_tusb_cb, Keypad &_keypad, Logger &_log)
+usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad, Logger &_log)
     : tinyusb(_tinyusb)
     , i2c_driver(_i2c_driver)
-    , led(_led)
     , tusb_cb(_tusb_cb)
     , keypad(_keypad)
     , log(_log)
 {
-}
-
-void usb_manager::set_leds()
-{
-    // if (tusb_cb.leds & KEYBOARD_LED_CAPSLOCK) {
-    //     led.set(0x00, 0xff, 0x00);
-    // } else {
-    //     led.set(0x00, 0x00, 0x00);
-    // }
 }
 
 void usb_manager::get_state()
@@ -127,8 +118,6 @@ void usb_manager::loop()
 
         state_left_previous = state_left;
         state_right_previous = state_right;
-
-        set_leds();
 
         log.print("m? ");
         if (!tinyusb.ready()) {

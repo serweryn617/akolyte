@@ -4,10 +4,9 @@
 #include "pico/multicore.h"
 #include "pico/util/queue.h"
 
-#include "pico_i2c_driver.h"
+#include "i2c/i2c_driver.h"
 #include "defs.hpp"
-#include "keypad.hpp"
-#include "led.hpp"
+#include "keypad/keypad.hpp"
 #include "tinyusb.hpp"
 #include "types.h"
 #include "flow_selector.hpp"
@@ -16,18 +15,19 @@
 #include "logger.hpp"
 #include "ssd1306.h"
 
-tinyusb_callback g_tinyusb_callback {
+using namespace lib::keypad;
+
+tinyusb_callback global_tinyusb_callback {
     .complete = true,
     .leds = 0,
     .mounted = false,
     .suspended = false,
 };
-
 queue_t inter_core_queue;
 
 void core1_main()
 {
-    drivers::pico::PicoI2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
+    drivers::i2c::I2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
     i2c_driver.init();
 
     ssd1306 oled(i2c_driver);
@@ -43,6 +43,12 @@ void core1_main()
                 break;
             case 1:
                 oled.print_string("Running primary");
+                oled.set_cursor(0, 8);
+                oled.print_string("Line 1");
+                oled.set_cursor(0, 16);
+                oled.print_string("Line 2");
+                oled.set_cursor(0, 24);
+                oled.print_string("Line 3");
                 break;
             case 2:
                 oled.print_string("Running secondary");
@@ -64,17 +70,16 @@ int main()
     Logger log;
     log.set_on(true);
 
-    TinyUSB t_usb(g_tinyusb_callback);
-    drivers::pico::PicoI2CDriver i2c_driver(i2c1, ext_i2c_sda, ext_i2c_scl, 0x55);
-    Led led(led_builtin);
-    Keypad keypad;
+    TinyUSB t_usb(global_tinyusb_callback);
+    drivers::i2c::I2CDriver i2c_driver(i2c1, ext_i2c_sda, ext_i2c_scl, 0x55);
+    Keypad keypad(keypad_in_pins, keypad_out_pins);
 
     keypad.init_gpio();
 
-    usb_manager manager(t_usb, i2c_driver, led, g_tinyusb_callback, keypad, log);
-    i2c_worker worker(i2c_driver, keypad, led);
+    usb_manager manager(t_usb, i2c_driver, global_tinyusb_callback, keypad, log);
+    i2c_worker worker(i2c_driver, keypad);
 
-    flow_selector selector(t_usb, i2c_driver, inter_core_queue, led, g_tinyusb_callback, manager, worker, log);
+    flow_selector selector(t_usb, i2c_driver, inter_core_queue, global_tinyusb_callback, manager, worker, log);
 
     log.print("Starting\r\n");
 

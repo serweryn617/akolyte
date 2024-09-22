@@ -1,7 +1,7 @@
-#include "pico_i2c_driver.h"
+#include "i2c/i2c_driver.h"
 #include "pico/i2c_slave.h"
 
-namespace drivers::pico {
+namespace drivers::i2c {
 
 volatile static bool to_send = 0;
 volatile static bool to_receive = 0;
@@ -20,7 +20,7 @@ void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
     }
 }
 
-PicoI2CDriver::PicoI2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uint8_t i2c_address)
+I2CDriver::I2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uint8_t i2c_address)
     : i2c_inst_(i2c_inst)
     , i2c_address_(i2c_address)
     , pin_sda_(pin_sda)
@@ -28,7 +28,7 @@ PicoI2CDriver::PicoI2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_
 {
 }
 
-void PicoI2CDriver::init()
+void I2CDriver::init()
 {
     i2c_init(i2c_inst_, 200 * 1000);
     gpio_set_function(pin_sda_, GPIO_FUNC_I2C);
@@ -37,7 +37,7 @@ void PicoI2CDriver::init()
     gpio_pull_up(pin_scl_);
 }
 
-int PicoI2CDriver::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout)
+int I2CDriver::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout)
 {
     if (timeout) {
         return i2c_read_timeout_us(i2c_inst_, i2c_address_, buffer, length, false, timeout);
@@ -46,7 +46,7 @@ int PicoI2CDriver::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout)
     }
 }
 
-int PicoI2CDriver::write_data(const uint8_t *buffer, uint32_t length, uint32_t timeout)
+int I2CDriver::write_data(const uint8_t *buffer, uint32_t length, uint32_t timeout)
 {
     if (timeout) {
         return i2c_write_timeout_us(i2c_inst_, i2c_address_, buffer, length, false, timeout);
@@ -55,34 +55,34 @@ int PicoI2CDriver::write_data(const uint8_t *buffer, uint32_t length, uint32_t t
     }
 }
 
-bool PicoI2CDriver::slave_requested()
+bool I2CDriver::slave_requested()
 {
     return to_send;
 }
 
-void PicoI2CDriver::clear_slave_request()
+void I2CDriver::clear_slave_request()
 {
     to_send = 0;
 }
 
-void PicoI2CDriver::slave_write_byte(uint8_t byte)
+void I2CDriver::slave_write_byte(uint8_t byte)
 {
     return i2c_write_byte_raw(i2c_inst_, byte);
 }
 
-bool PicoI2CDriver::slave_received()
+bool I2CDriver::slave_received()
 {
     bool temp = to_receive;
     to_receive = 0;
     return temp;
 }
 
-uint8_t PicoI2CDriver::slave_get_byte()
+uint8_t I2CDriver::slave_get_byte()
 {
     return i2c_read_byte_raw(i2c_inst_);
 }
 
-void PicoI2CDriver::set_slave_mode(bool slave)
+void I2CDriver::set_slave_mode(bool slave)
 {
     if (slave) {
         i2c_slave_init(i2c_inst_, i2c_address_, &i2c_slave_handler);
@@ -91,4 +91,4 @@ void PicoI2CDriver::set_slave_mode(bool slave)
     }
 }
 
-}  // namespace drivers::pico
+}  // namespace drivers::i2c

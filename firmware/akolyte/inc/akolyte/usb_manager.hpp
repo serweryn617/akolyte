@@ -1,12 +1,11 @@
 #pragma once
 
 #include "pico/stdlib.h"
-#include "pico_i2c_driver.h"
+#include "i2c/i2c_driver.h"
 #include "hid_keycodes.hpp"
-#include "led.hpp"
 #include "tinyusb.hpp"
 #include "types.h"
-#include "keypad.hpp"
+#include "keypad/keypad.hpp"
 #include "logger.hpp"
 #include <array>
 
@@ -22,19 +21,17 @@ private:
     bool worker_connected = false;
 
     TinyUSB &tinyusb;
-    drivers::pico::PicoI2CDriver &i2c_driver;
-    Led &led;
+    drivers::i2c::I2CDriver &i2c_driver;
     tinyusb_callback &tusb_cb;
-    Keypad &keypad;
+    lib::keypad::Keypad &keypad;
     Logger &log;
 
 public:
-    usb_manager(TinyUSB &_tinyusb, drivers::pico::PicoI2CDriver &_i2c_driver, Led &_led, tinyusb_callback &_tusb_cb, Keypad &_keypad, Logger &_log);
+    usb_manager(TinyUSB &_tinyusb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, lib::keypad::Keypad &_keypad, Logger &_log);
     void loop();
 
     void get_state();
     void process_keys(uint32_t state, uint32_t changed, const std::array<hid_key, 30> &key_arr);
     void update_layers();
-    void set_leds();
 };
 
