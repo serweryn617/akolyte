@@ -2,6 +2,7 @@
 
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
+#include "pico/util/queue.h"
 
 #include "pico_i2c_driver.h"
 #include "defs.hpp"
@@ -22,6 +23,8 @@ tinyusb_callback g_tinyusb_callback {
     .suspended = false,
 };
 
+queue_t inter_core_queue;
+
 void core1_main()
 {
     drivers::pico::PicoI2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
@@ -30,15 +33,32 @@ void core1_main()
     ssd1306 oled(i2c_driver);
     oled.init();
 
-    oled.set_cursor(0, 0);
-    oled.print_string("test...");
-    oled.display();
+    uint8_t last_message = 0;
 
-    while(true);
+    while(true) {
+        oled.set_cursor(0, 0);
+        switch (last_message) {
+            case 0:
+                oled.print_string("None");
+                break;
+            case 1:
+                oled.print_string("Running primary");
+                break;
+            case 2:
+                oled.print_string("Running secondary");
+                break;
+            default:
+                oled.print_string("ERROR");
+                break;
+        }
+        oled.display();
+        queue_remove_blocking(&inter_core_queue, &last_message);
+    }
 }
 
 int main()
 {
+    queue_init(&inter_core_queue, sizeof(uint8_t), 16);
     multicore_launch_core1(core1_main);
 
     Logger log;
@@ -54,7 +74,7 @@ int main()
     usb_manager manager(t_usb, i2c_driver, led, g_tinyusb_callback, keypad, log);
     i2c_worker worker(i2c_driver, keypad, led);
 
-    flow_selector selector(t_usb, i2c_driver, led, g_tinyusb_callback, manager, worker, log);
+    flow_selector selector(t_usb, i2c_driver, inter_core_queue, led, g_tinyusb_callback, manager, worker, log);
 
     log.print("Starting\r\n");
 

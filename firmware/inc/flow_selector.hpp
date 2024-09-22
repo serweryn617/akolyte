@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pico/util/queue.h"
+
 #include "tinyusb.hpp"
 #include "pico_i2c_driver.h"
 #include "led.hpp"
@@ -13,6 +15,7 @@ class flow_selector
 private:
     TinyUSB &tiny_usb;
     drivers::pico::PicoI2CDriver &i2c_driver;
+    queue_t &inter_core_queue;
     Led &led;
     tinyusb_callback &tusb_cb;
 
@@ -21,7 +24,7 @@ private:
     Logger &log;
 
 public:
-    flow_selector(TinyUSB &_tiny_usb, drivers::pico::PicoI2CDriver &_i2c_driver, Led &_led, tinyusb_callback &_tusb_cb, usb_manager &_manager, i2c_worker &_worker, Logger &_log);
+    flow_selector(TinyUSB &_tiny_usb, drivers::pico::PicoI2CDriver &_i2c_driver, queue_t &inter_core_queue_, Led &_led, tinyusb_callback &_tusb_cb, usb_manager &_manager, i2c_worker &_worker, Logger &_log);
     void init_all();
     void start();
 };
