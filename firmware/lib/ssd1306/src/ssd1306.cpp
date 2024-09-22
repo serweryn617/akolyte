@@ -11,7 +11,7 @@ void ssd1306::write_command(uint8_t cmd)
 
 void ssd1306::init()
 {
-    write_command(0xAE);  // Set Display ON
+    write_command(0xAE);  // Set Display OFF
     write_command(0x20);  // Set Memory Addressing Mode
     write_command(0x00);  // horizontal
     write_command(0x40);  // Set Display Start Line
@@ -32,15 +32,15 @@ void ssd1306::init()
     write_command(0x81);  // Set Contrast Control
     write_command(0xFF);  // max contrast
     write_command(0xA4);  // Entire display ON - displays RAM contents
-    write_command(0x8D);  // ?
-    write_command(0x14);  // ?
+    write_command(0x8D);  // Enable charge pump regulator
+    write_command(0x14);  // ^
     write_command(0xA6);  // Set normal mode (not inversed)
 
     sleep_ms(100);
     fill(0);
     display();
 
-    write_command(0xAF);  // Set Display OFF
+    write_command(0xAF);  // Set Display ON
 }
 
 void ssd1306::set_cursor(uint8_t x, uint8_t y)
