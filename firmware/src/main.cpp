@@ -37,22 +37,22 @@ void core1_main()
 
     while(true) {
         oled.set_cursor(0, 0);
-        oled.print_string("Running primary");
+        switch (last_message) {
+            case 0:
+                oled.print_string("None");
+                break;
+            case 1:
+                oled.print_string("Running primary");
+                break;
+            case 2:
+                oled.print_string("Running secondary");
+                break;
+            default:
+                oled.print_string("ERROR");
+                break;
+        }
         oled.display();
-        
-        // switch (last_message) {
-        //     case 1:
-        //         oled.print_string("Running primary");
-        //         break;
-        //     case 2:
-        //         oled.print_string("Running secondary");
-        //         break;
-        //     default:
-        //         oled.print_string("ERROR");
-        //         break;
-        // }
-        // oled.display();
-        // queue_try_remove(&inter_core_queue, &last_message);
+        queue_remove_blocking(&inter_core_queue, &last_message);
     }
 }
 

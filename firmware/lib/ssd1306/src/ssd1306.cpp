@@ -32,11 +32,15 @@ void ssd1306::init()
     write_command(0x81);  // Set Contrast Control
     write_command(0xFF);  // max contrast
     write_command(0xA4);  // Entire display ON - displays RAM contents
+    write_command(0x8D);  // ?
+    write_command(0x14);  // ?
     write_command(0xA6);  // Set normal mode (not inversed)
-    write_command(0xAF);  // Set Display OFF
 
     sleep_ms(100);
     fill(0);
+    display();
+
+    write_command(0xAF);  // Set Display OFF
 }
 
 void ssd1306::set_cursor(uint8_t x, uint8_t y)
