@@ -1,9 +1,8 @@
 #include "akolyte/flow_selector.hpp"
 
-flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::i2c::I2CDriver &_i2c_driver, queue_t &inter_core_queue_, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker)
+flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker)
     : tiny_usb(_tiny_usb)
     , i2c_driver(_i2c_driver)
-    , inter_core_queue(inter_core_queue_)
     , tusb_cb(_tusb_cb)
     , manager(_manager)
     , worker(_worker)
@@ -23,14 +22,14 @@ void flow_selector::start()
 
     while (true) {
         uint8_t message_none = 0;
-        queue_add_blocking(&inter_core_queue, &message_none);
+        // queue_add_blocking(&inter_core_queue, &message_none);
 
         tiny_usb.device_task();
         tiny_usb.hid_task();
 
         if (tiny_usb.ready()) {
             uint8_t message = 1;
-            queue_add_blocking(&inter_core_queue, &message);
+            // queue_add_blocking(&inter_core_queue, &message);
 
             i2c_driver.set_slave_mode(false);
             manager.loop();
@@ -39,7 +38,7 @@ void flow_selector::start()
 
         if (i2c_driver.slave_requested()) {
             uint8_t message = 2;
-            queue_add_blocking(&inter_core_queue, &message);
+            // queue_add_blocking(&inter_core_queue, &message);
 
             worker.loop();
         }

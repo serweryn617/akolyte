@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 def docker_command(command=None, interactive=False):
+    # TODO: use shlex for quoting command
     return ' '.join(f'''
         docker run --rm
         {'-it' if interactive else ''}
@@ -96,7 +97,7 @@ projects['build_firmware'] = [
 
 projects['copy_compile_commands'] = [
     'cp build/compile_commands.json .vscode/compile_commands.json',
-    ('.vscode', f'sed -i "s#/workspace#{Path.cwd()}#g" compile_commands.json'),
+    ('.vscode', f'sed -i "s#/workspace#{Path.cwd()}#g" compile_commands.json'),  # TODO: use build dir instead of vscode
 ]
 
 

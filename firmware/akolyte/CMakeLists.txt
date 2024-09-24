@@ -16,6 +16,7 @@ target_link_libraries(${PROJECT_NAME}
     ssd1306
     i2c_driver
     keypad
+    queue
 )
 
 # Create map/bin/hex/uf2 files

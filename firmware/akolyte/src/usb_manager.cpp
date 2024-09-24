@@ -3,12 +3,14 @@
 
 using namespace drivers::i2c;
 using namespace lib::keypad;
+using namespace lib::queue;
 
-usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad)
+usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad, Queue &queue_)
     : tinyusb(_tinyusb)
     , i2c_driver(_i2c_driver)
     , tusb_cb(_tusb_cb)
     , keypad(_keypad)
+    , queue(queue_)
 {
 }
 
@@ -85,6 +87,20 @@ void usb_manager::update_layers()
     layer = new_layer;
 }
 
+void usb_manager::get_leds()
+{
+    leds = tusb_cb.leds;
+}
+
+void usb_manager::process_leds()
+{
+    if ((leds & KEYBOARD_LED_CAPSLOCK) && !(leds_previous & KEYBOARD_LED_CAPSLOCK)) {
+        queue.add(Command::caps_on);
+    } else if (!(leds & KEYBOARD_LED_CAPSLOCK) && (leds_previous & KEYBOARD_LED_CAPSLOCK)) {
+        queue.add(Command::caps_off);
+    }
+}
+
 void usb_manager::loop()
 {
     uint64_t timestamp = time_us_64();
@@ -95,9 +111,11 @@ void usb_manager::loop()
 
         get_state();
         update_layers();
+        get_leds();
 
         uint32_t changed_left = state_left ^ state_left_previous;
         uint32_t changed_right = state_right ^ state_right_previous;
+        uint8_t changed_leds = leds ^ leds_previous;
 
         // TODO: or layer changed
         if (changed_left) {
@@ -106,12 +124,16 @@ void usb_manager::loop()
         if (changed_right) {
             process_keys(state_right, changed_right, layers[layer].key_r);
         }
+        if (changed_leds) {
+            process_leds();
+        }
 
         tinyusb.device_task();
         tinyusb.hid_task();
 
         state_left_previous = state_left;
         state_right_previous = state_right;
+        leds_previous = leds;
 
         if (!tinyusb.ready()) {
             break;
