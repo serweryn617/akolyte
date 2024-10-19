@@ -36,6 +36,7 @@ uint32_t Keypad::get_state()
         for (size_t row = 0; row < 5; row++) {
             auto jth_row_pin = in_pins[row];
             state |= gpio_get(jth_row_pin) << (row * 6 + col);
+            sleep_us(1);
         }
 
         gpio_put(ith_col_pin, false);
