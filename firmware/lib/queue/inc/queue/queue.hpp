@@ -10,10 +10,12 @@ enum class Command : uint32_t {
     none,
     caps_on,
     caps_off,
+    num_on,
+    num_off,
+    layer_0,
     layer_1,
     layer_2,
     layer_3,
-    layer_4,
 };
 
 class Queue

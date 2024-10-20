@@ -101,11 +101,12 @@ void ssd1306::print_char(uint8_t c)
     }
 }
 
-void ssd1306::print_string(std::string str)
+void ssd1306::print_string(const char *str)
 {
-    for (auto &&c : str)
+    constexpr uint limit = 22;
+    for (uint i = 0; i < limit && str[i] != '\0'; i++)
     {
-        print_char(c);
+        print_char(str[i]);
         cursor_x += 6;
     }
 }

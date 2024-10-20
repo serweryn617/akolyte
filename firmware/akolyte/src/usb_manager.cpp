@@ -69,6 +69,11 @@ void usb_manager::update_layers()
 
     // Deactivate all pressed keys which change in new layer
     if (new_layer != layer) {
+        if (new_layer == 0) queue.add(Command::layer_0);
+        if (new_layer == 1) queue.add(Command::layer_1);
+        if (new_layer == 2) queue.add(Command::layer_2);
+        if (new_layer == 3) queue.add(Command::layer_3);
+
         for (uint8_t idx = 0; idx < num_keys; idx++) {
             hid_key current_key_l = layers[layer].key_l[idx];
             hid_key new_key_l = layers[new_layer].key_l[idx];

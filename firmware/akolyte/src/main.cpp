@@ -13,6 +13,7 @@
 #include "akolyte/flow_selector.hpp"
 #include "akolyte/usb_manager.hpp"
 #include "akolyte/i2c_worker.hpp"
+#include "akolyte/keycodes.hpp"
 #include "ssd1306.h"
 
 using namespace lib::keypad;
@@ -28,25 +29,54 @@ tinyusb_callback global_tinyusb_callback {
 void core1_main()
 {
     Queue queue;
-    drivers::i2c::I2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
-    i2c_driver.init();
 
+    drivers::i2c::I2CDriver i2c_driver(oled_i2c, oled_i2c_sda, oled_i2c_scl, oled_i2c_address);
     ssd1306 oled(i2c_driver);
+
+    i2c_driver.init();
     oled.init();
 
-    Command command;
+    uint layer = 0;
+    bool caps_lock = false;
+    bool num_lock = false;
 
+    Command command = Command::none;
     while(true) {
-        oled.set_cursor(0, 0);
-
         command = queue.get();
-        if (command == Command::caps_on) {
-            oled.print_string("MEGA TEXT");
-        } else if (command == Command::caps_off) {
-            oled.print_string("mini text");
+
+        switch (command) {
+            case Command::caps_on:
+                caps_lock = true;
+                break;
+            case Command::caps_off:
+                caps_lock = false;
+                break;
+            case Command::num_on:
+                num_lock = true;
+                break;
+            case Command::num_off:
+                num_lock = false;
+                break;
+            case Command::layer_0:
+                layer = 0;
+                break;
+            case Command::layer_1:
+                layer = 1;
+                break;
+            case Command::layer_2:
+                layer = 2;
+                break;
+            case Command::layer_3:
+                layer = 3;
+                break;
         }
 
+        oled.set_cursor(0, 0);
+
+        oled.print_string(layers[layer].name);
+
         oled.display();
+        //sleep_ms(10);
     }
 }
 

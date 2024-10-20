@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <string>
 
 #include "pico/stdlib.h"
 #include "i2c/i2c_driver.h"
@@ -19,7 +18,7 @@ public:
     void fill(bool val);
     void set_pixel(uint8_t x, uint8_t y, bool val);
     void print_char(uint8_t c);
-    void print_string(std::string str);
+    void print_string(const char *str);
     void display();
     void set_cursor(uint8_t x, uint8_t y);
 
