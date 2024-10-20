@@ -1,3 +1,4 @@
+add_subdirectory(defs)
 add_subdirectory(keypad)
 add_subdirectory(queue)
 add_subdirectory(ssd1306)

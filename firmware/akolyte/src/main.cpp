@@ -5,7 +5,7 @@
 #include "pico/util/queue.h"
 
 #include "i2c/i2c_driver.h"
-#include "akolyte/defs.hpp"
+#include "defs/defs.hpp"
 #include "keypad/keypad.hpp"
 #include "queue/queue.hpp"
 #include "tinyusb.hpp"

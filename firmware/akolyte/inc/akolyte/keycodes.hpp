@@ -2,15 +2,21 @@
 
 #include "hid_keycodes.hpp"
 #include "pico/stdlib.h"
+#include "defs/defs.hpp"
 #include <array>
 
-struct keycodes
+typedef std::array<hid_key, num_keys> keycodes;
+
+struct layer
 {
-    std::array<hid_key, 30> key_l;
-    std::array<hid_key, 30> key_r;
+    char name[11];
+    keycodes key_l;
+    keycodes key_r;
 };
 
-constexpr keycodes workman = {
+constexpr layer workman = {
+    .name = "Workman   ",
+
     .key_l = {
         key::escape,       key::grave,    key::f1,   key::f2,      key::f3,    key::f4,
         key::tab,          key::q,        key::d,    key::r,       key::w,     key::b,
@@ -28,7 +34,9 @@ constexpr keycodes workman = {
     }
 };
 
-constexpr keycodes navigation = {
+constexpr layer navigation = {
+    .name = "Navigation",
+
     .key_l = {
         key::escape,       key::grave,    key::f1,   key::f2,      key::f3,    key::f4,
         key::tab,          key::q,        key::d,    key::r,       key::w,     key::b,
@@ -46,7 +54,9 @@ constexpr keycodes navigation = {
     }
 };
 
-constexpr keycodes symbols = {
+constexpr layer symbols = {
+    .name = "Symbols   ",
+
     .key_l = {
         key::escape,       key::grave,    key::f1,      key::f2,      key::f3,          key::f4,
         key::tab,          key::none,     key::grave,   key::tilde,   key::exclamation, key::keypad_equal,
@@ -64,7 +74,9 @@ constexpr keycodes symbols = {
     }
 };
 
-constexpr keycodes numbers = {
+constexpr layer numbers = {
+    .name = "Numbers   ",
+
     .key_l = {
         key::escape,       key::grave,    key::f1,   key::f2,      key::f3,              key::f4,
         key::tab,          key::none,     key::none, key::none,    key::keypad_multiply, key::keypad_equal,
@@ -82,7 +94,7 @@ constexpr keycodes numbers = {
     }
 };
 
-constexpr std::array<keycodes, 4> layers = {
+constexpr std::array<layer, 4> layers = {
     workman,
     navigation,
     symbols,

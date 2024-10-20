@@ -1,5 +1,6 @@
 #include "akolyte/usb_manager.hpp"
 #include "akolyte/keycodes.hpp"
+#include "defs/defs.hpp"
 
 using namespace drivers::i2c;
 using namespace lib::keypad;
@@ -27,9 +28,9 @@ void usb_manager::get_state()
     }
 }
 
-void usb_manager::process_keys(uint32_t state, uint32_t changed, const std::array<hid_key, 30> &key_arr)
+void usb_manager::process_keys(uint32_t state, uint32_t changed, const keycodes &key_arr)
 {
-    for (uint8_t idx = 0; idx < 30; idx++) {
+    for (uint8_t idx = 0; idx < num_keys; idx++) {
         bool was_changed = changed >> idx & 0b1;
         if (!was_changed) {
             continue;
@@ -46,7 +47,7 @@ void usb_manager::update_layers()
 {
     uint8_t new_layer = 0;
 
-    for (uint8_t idx = 0; idx < 30; idx++) {
+    for (uint8_t idx = 0; idx < num_keys; idx++) {
         hid_key key = layers[layer].key_l[idx];
         bool state_ = state_left >> idx & 0b1;
 
@@ -56,7 +57,7 @@ void usb_manager::update_layers()
         }
     }
 
-    for (uint8_t idx = 0; idx < 30; idx++) {
+    for (uint8_t idx = 0; idx < num_keys; idx++) {
         hid_key key = layers[layer].key_r[idx];
         bool state_ = state_right >> idx & 0b1;
 
@@ -68,7 +69,7 @@ void usb_manager::update_layers()
 
     // Deactivate all pressed keys which change in new layer
     if (new_layer != layer) {
-        for (uint8_t idx = 0; idx < 30; idx++) {
+        for (uint8_t idx = 0; idx < num_keys; idx++) {
             hid_key current_key_l = layers[layer].key_l[idx];
             hid_key new_key_l = layers[new_layer].key_l[idx];
 

@@ -17,6 +17,7 @@ target_link_libraries(${PROJECT_NAME}
     i2c_driver
     keypad
     queue
+    defs
 )
 
 # Create map/bin/hex/uf2 files

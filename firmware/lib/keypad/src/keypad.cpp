@@ -3,7 +3,7 @@
 
 namespace lib::keypad {
 
-Keypad::Keypad(const std::array<uint, 5UL> &in_pins_, const std::array<uint, 6UL> &out_pins_)
+Keypad::Keypad(const in_array &in_pins_, const out_array &out_pins_)
     : in_pins(in_pins_)
     , out_pins(out_pins_)
 {
@@ -28,14 +28,14 @@ uint32_t Keypad::get_state()
 {
     uint32_t state = 0;
 
-    for (size_t col = 0; col < 6; col++) {
+    for (size_t col = 0; col < out_pins.size(); col++) {
         auto ith_col_pin = out_pins[col];
         gpio_put(ith_col_pin, true);
         sleep_us(1);
 
-        for (size_t row = 0; row < 5; row++) {
+        for (size_t row = 0; row < in_pins.size(); row++) {
             auto jth_row_pin = in_pins[row];
-            state |= gpio_get(jth_row_pin) << (row * 6 + col);
+            state |= gpio_get(jth_row_pin) << (row * out_pins.size() + col);
             sleep_us(1);
         }
 

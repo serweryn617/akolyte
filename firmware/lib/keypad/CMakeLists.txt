@@ -8,4 +8,5 @@ target_include_directories(keypad PUBLIC
 
 target_link_libraries(keypad PRIVATE
     pico_stdlib
+    defs
 )

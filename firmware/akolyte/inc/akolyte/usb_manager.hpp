@@ -6,6 +6,7 @@
 #include "tinyusb.hpp"
 #include "types.h"
 #include "keypad/keypad.hpp"
+#include "akolyte/keycodes.hpp"
 #include "queue/queue.hpp"
 #include <array>
 
@@ -34,7 +35,7 @@ public:
     void loop();
 
     void get_state();
-    void process_keys(uint32_t state, uint32_t changed, const std::array<hid_key, 30> &key_arr);
+    void process_keys(uint32_t state, uint32_t changed, const keycodes &key_arr);
     void update_layers();
     void get_leds();
     void process_leds();
