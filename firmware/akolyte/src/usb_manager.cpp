@@ -39,13 +39,23 @@ void usb_manager::process_keys(uint32_t state, uint32_t changed, const keycodes 
         hid_key key = key_arr[idx];
         bool state_ = state >> idx & 0b1;
 
+        if (key.type == HIDType::Function && state_) {
+            if (key.keycode == functions::layout_switch) {
+                if (base_layer == 0) {
+                    base_layer = 5;
+                } else {
+                    base_layer = 0;
+                }
+            }
+        }
+
         tinyusb.set_key(key, state_);
     }
 }
 
 void usb_manager::update_layers()
 {
-    uint8_t new_layer = 0;
+    uint8_t new_layer = base_layer;
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
         hid_key key = layers[layer].key_l[idx];
@@ -70,9 +80,11 @@ void usb_manager::update_layers()
     // Deactivate all pressed keys which change in new layer
     if (new_layer != layer) {
         if (new_layer == 0) queue.add(Command::layer_0);
-        if (new_layer == 1) queue.add(Command::layer_1);
-        if (new_layer == 2) queue.add(Command::layer_2);
-        if (new_layer == 3) queue.add(Command::layer_3);
+        else if (new_layer == 1) queue.add(Command::layer_1);
+        else if (new_layer == 2) queue.add(Command::layer_2);
+        else if (new_layer == 3) queue.add(Command::layer_3);
+        else if (new_layer == 4) queue.add(Command::layer_4);
+        else if (new_layer == 5) queue.add(Command::layer_5);
 
         for (uint8_t idx = 0; idx < num_keys; idx++) {
             hid_key current_key_l = layers[layer].key_l[idx];

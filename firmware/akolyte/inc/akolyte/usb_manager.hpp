@@ -21,6 +21,7 @@ private:
     uint8_t leds = 0;
     uint8_t leds_previous = 0;
 
+    uint8_t base_layer = 0;
     uint8_t layer = 0;
     bool worker_connected = false;
 

@@ -93,7 +93,7 @@ void ssd1306::fill(bool val)
 
 void ssd1306::print_string(const char *str, uint8_t font_size)
 {
-    constexpr uint limit = 4;  // TODO: not updated for templated fonts
+    constexpr uint limit = 11;  // TODO: not updated for templated fonts
     for (uint i = 0; i < limit && str[i] != '\0'; i++)
     {
         if (font_size == 8) {

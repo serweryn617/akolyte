@@ -69,6 +69,12 @@ void core1_main()
             case Command::layer_3:
                 layer = 3;
                 break;
+            case Command::layer_4:
+                layer = 4;
+                break;
+            case Command::layer_5:
+                layer = 5;
+                break;
         }
 
         oled.set_cursor(0, 0);

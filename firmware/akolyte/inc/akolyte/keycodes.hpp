@@ -18,9 +18,9 @@ constexpr layer workman = {
     .name = "Workman   ",
 
     .key_l = {
-        key::escape,       key::q,        key::d,    key::r,       key::w,     key::b,
-        key::tab,          key::a,        key::s,    key::h,       key::t,     key::g,
-        key::control_left, key::z,        key::x,    key::m,       key::c,     key::v,
+        key::escape,       key::q,        key::d,        key::r,       key::w,     key::b,
+        key::tab,          key::a,        key::s,        key::h,       key::t,     key::g,
+        key::control_left, key::z,        key::x,        key::m,       key::c,     key::v,
         key::unused,       key::gui_left, key::alt_left, key::layer_3, key::space, key::shift_left,
     },
 
@@ -28,7 +28,25 @@ constexpr layer workman = {
         key::j,       key::f,          key::u,       key::p,         key::semicolon, key::backspace,
         key::y,       key::n,          key::e,       key::o,         key::i,         key::enter,
         key::k,       key::l,          key::comma,   key::period,    key::slash,     key::control_right,
-        key::layer_1, key::underscore, key::layer_2, key::alt_right, key::none,      key::unused,
+        key::layer_1, key::underscore, key::layer_2, key::alt_right, key::layer_4,   key::unused,
+    }
+};
+
+constexpr layer qwerty = {
+    .name = "Qwerty    ",
+
+    .key_l = {
+        key::escape,       key::q,        key::w,        key::e,       key::r,     key::t,
+        key::tab,          key::a,        key::s,        key::d,       key::f,     key::g,
+        key::control_left, key::z,        key::x,        key::c,       key::v,     key::b,
+        key::unused,       key::gui_left, key::alt_left, key::layer_3, key::space, key::shift_left,
+    },
+
+    .key_r = {
+        key::y,       key::u,          key::i,       key::o,         key::p,         key::backspace,
+        key::h,       key::j,          key::k,       key::l,         key::semicolon, key::enter,
+        key::n,       key::m,          key::comma,   key::period,    key::slash,     key::control_right,
+        key::layer_1, key::underscore, key::layer_2, key::alt_right, key::layer_4,   key::unused,
     }
 };
 
@@ -86,9 +104,29 @@ constexpr layer numbers = {
     }
 };
 
-constexpr std::array<layer, 4> layers = {
+constexpr layer function = {
+    .name = "Functions ",
+
+    .key_l = {
+        key::layout_switch, key::none, key::none, key::none, key::none, key::none,
+        key::none,          key::none, key::none, key::none, key::none, key::none,
+        key::none,          key::none, key::none, key::none, key::none, key::none,
+        key::unused,        key::none, key::none, key::none, key::none, key::none,
+    },
+
+    .key_r = {
+        key::none, key::none, key::none, key::none, key::none,    key::none,
+        key::none, key::none, key::none, key::none, key::none,    key::none,
+        key::none, key::none, key::none, key::none, key::none,    key::none,
+        key::none, key::none, key::none, key::none, key::layer_4, key::unused,
+    }
+};
+
+constexpr std::array<layer, 6> layers = {
     workman,
     navigation,
     symbols,
     numbers,
+    function,
+    qwerty,
 };

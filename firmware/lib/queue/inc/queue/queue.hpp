@@ -16,6 +16,8 @@ enum class Command : uint32_t {
     layer_1,
     layer_2,
     layer_3,
+    layer_4,
+    layer_5,
 };
 
 class Queue

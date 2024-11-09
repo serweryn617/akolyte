@@ -10,7 +10,14 @@ enum class HIDType
     ShiftedKey,
     Modifier,
     Layer,
+    Function,
 };
+
+namespace functions {
+enum : uint8_t {
+    layout_switch,
+};
+}
 
 struct hid_key
 {
@@ -214,5 +221,8 @@ constexpr hid_key ampersand = { HIDType::ShiftedKey, HID_KEY_7 };
 constexpr hid_key layer_1 = { HIDType::Layer, 1 };
 constexpr hid_key layer_2 = { HIDType::Layer, 2 };
 constexpr hid_key layer_3 = { HIDType::Layer, 3 };
+constexpr hid_key layer_4 = { HIDType::Layer, 4 };
 
-}
+constexpr hid_key layout_switch = { HIDType::Function, functions::layout_switch };
+
+}  // namespace key
