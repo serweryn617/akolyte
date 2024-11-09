@@ -2,13 +2,13 @@ import numpy as np
 from PIL import Image
 from math import ceil
 
-image_path = "chars_8.png"
+image_path = "chars_32.png"
+width = 20
+height = 32
+
 num_chars = 98
 img_cols = 16
-border = 1
-
-width = 5
-height = 8
+border = 2
 
 img_rows = ceil(num_chars / img_cols)
 img_chr_w, img_chr_h = width + border * 2, height + border * 2
@@ -30,4 +30,4 @@ for n in range(num_chars):
                 column |= (1 << y)
         data.append(column)
 
-    print('{' + ', '.join([f'0x{d:02x}' for d in data]) + '},')
+    print('character<uint32_t, 20>{{' + ', '.join([f'0x{d:08x}' for d in data]) + '}},')

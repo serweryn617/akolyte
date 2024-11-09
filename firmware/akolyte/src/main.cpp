@@ -73,10 +73,10 @@ void core1_main()
 
         oled.set_cursor(0, 0);
 
-        oled.print_string(layers[layer].name);
+        oled.print_string(layers[layer].name, 16);
 
         oled.display();
-        //sleep_ms(10);
+        sleep_ms(10);
     }
 }
 

@@ -1,5 +1,5 @@
 #include "ssd1306.h"
-#include "font.h"
+#include "font.hpp"
 
 #include <cstring>
 
@@ -90,23 +90,23 @@ void ssd1306::fill(bool val)
     }
 }
 
-void ssd1306::print_char(uint8_t c)
-{
-    for (size_t cx = 0; cx < 5; cx++)
-    {
-        for (size_t cy = 0; cy < 8; cy++)
-        {
-            set_pixel(cursor_x + cx, cursor_y + cy, (ascii_8x[c - 32][cx] >> cy) & 0b1);
-        }
-    }
-}
 
-void ssd1306::print_string(const char *str)
+void ssd1306::print_string(const char *str, uint8_t font_size)
 {
-    constexpr uint limit = 22;
+    constexpr uint limit = 4;  // TODO: not updated for templated fonts
     for (uint i = 0; i < limit && str[i] != '\0'; i++)
     {
-        print_char(str[i]);
-        cursor_x += 6;
+        if (font_size == 8) {
+            print_char(font_8x5, str[i]);
+            cursor_x += font_8x5.width + 1;
+        }
+        else if (font_size == 16) {
+            print_char(font_16x10, str[i]);
+            cursor_x += font_16x10.width + 2;
+        }
+        else if (font_size == 32) {
+            print_char(font_32x20, str[i]);
+            cursor_x += font_32x20.width + 4;
+        }
     }
 }
