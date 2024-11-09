@@ -31,15 +31,16 @@ uint32_t Keypad::get_state()
     for (size_t col = 0; col < out_pins.size(); col++) {
         auto ith_col_pin = out_pins[col];
         gpio_put(ith_col_pin, true);
-        sleep_us(1);
+        sleep_us(2);
 
         for (size_t row = 0; row < in_pins.size(); row++) {
             auto jth_row_pin = in_pins[row];
             state |= gpio_get(jth_row_pin) << (row * out_pins.size() + col);
-            sleep_us(1);
+            sleep_us(2);
         }
 
         gpio_put(ith_col_pin, false);
+        sleep_us(2);
     }
 
     return state;
