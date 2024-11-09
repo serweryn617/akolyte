@@ -23,6 +23,7 @@ bool operator!=(const hid_key &key1, const hid_key &key2);
 
 namespace key {
 
+constexpr hid_key unused = { HIDType::None, HID_KEY_NONE };
 constexpr hid_key none = { HIDType::None, HID_KEY_NONE };
 constexpr hid_key a = { HIDType::Key, HID_KEY_A };
 constexpr hid_key b = { HIDType::Key, HID_KEY_B };
