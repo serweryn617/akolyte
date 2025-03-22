@@ -31,7 +31,7 @@ void usb_manager::get_state()
 hid_key usb_manager::get_this_side_key(uint8_t idx)
 {
     hid_key key;
-    if (config::side == config::left) {
+    if constexpr (config::side == config::left) {
         key = layers[layer].key_l[idx];
     } else {
         key = layers[layer].key_r[idx];
@@ -42,7 +42,7 @@ hid_key usb_manager::get_this_side_key(uint8_t idx)
 hid_key usb_manager::get_other_side_key(uint8_t idx)
 {
     hid_key key;
-    if (config::side == config::left) {
+    if constexpr (config::side == config::left) {
         key = layers[layer].key_r[idx];
     } else {
         key = layers[layer].key_l[idx];
