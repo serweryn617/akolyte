@@ -15,7 +15,7 @@ static_assert(num_keys <= 32, "Number of keys must be <=32 as uint32_t is used t
 
 constexpr uint i2c_baudrate = 200'000;
 
-#if SIDE == left
+#if SIDE == 0
 
 constexpr std::array<uint, num_in_pins> keypad_in_pins = { 6, 7, 5, 4 };
 constexpr std::array<uint, num_out_pins> keypad_out_pins = { 13, 14, 15, 12, 11, 10 };
@@ -30,7 +30,7 @@ constexpr uint oled_i2c_address = 0x3C;
 
 constexpr uint led_builtin = 16;
 
-#elif SIDE == right
+#elif SIDE == 1
 
 constexpr std::array<uint, num_in_pins> keypad_in_pins = { 12, 10, 13, 14 };
 constexpr std::array<uint, num_out_pins> keypad_out_pins = { 4, 5, 6, 7, 8, 9 };
