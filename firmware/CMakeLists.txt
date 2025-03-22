@@ -20,8 +20,6 @@ add_subdirectory(akolyte)
 add_subdirectory(drivers)
 add_subdirectory(lib)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE SIDE=${SIDE})
-
 # Enable usb output
 # pico_enable_stdio_usb(${PROJECT_NAME} 1)
 

@@ -8,3 +8,5 @@ target_link_libraries(defs INTERFACE
     pico_stdlib
     hardware_i2c
 )
+
+target_compile_definitions(defs INTERFACE SIDE=${SIDE})
