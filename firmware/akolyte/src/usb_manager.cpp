@@ -58,7 +58,11 @@ void usb_manager::update_layers()
     uint8_t new_layer = base_layer;
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
+#if SIDE == 0
         hid_key key = layers[layer].key_l[idx];
+#else
+        hid_key key = layers[layer].key_r[idx];
+#endif
         bool state_ = state_this >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
@@ -68,7 +72,11 @@ void usb_manager::update_layers()
     }
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
+#if SIDE == 0
         hid_key key = layers[layer].key_r[idx];
+#else
+        hid_key key = layers[layer].key_l[idx];
+#endif
         bool state_ = state_other >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
@@ -137,10 +145,18 @@ void usb_manager::loop()
 
         // TODO: or layer changed
         if (changed_this) {
+#if SIDE == 0
             process_keys(state_this, changed_this, layers[layer].key_l);
+#else
+            process_keys(state_this, changed_this, layers[layer].key_r);
+#endif
         }
         if (changed_other) {
+#if SIDE == 0
             process_keys(state_other, changed_other, layers[layer].key_r);
+#else
+            process_keys(state_other, changed_other, layers[layer].key_l);
+#endif
         }
         if (changed_leds) {
             process_leds();
