@@ -28,7 +28,29 @@ void usb_manager::get_state()
     }
 }
 
-void usb_manager::process_keys(uint32_t state, uint32_t changed, const keycodes &key_arr)
+hid_key usb_manager::get_this_side_key(uint8_t idx)
+{
+    hid_key key;
+    if (config::side == config::left) {
+        key = layers[layer].key_l[idx];
+    } else {
+        key = layers[layer].key_r[idx];
+    }
+    return key;
+}
+
+hid_key usb_manager::get_other_side_key(uint8_t idx)
+{
+    hid_key key;
+    if (config::side == config::left) {
+        key = layers[layer].key_r[idx];
+    } else {
+        key = layers[layer].key_l[idx];
+    }
+    return key;
+}
+
+void usb_manager::process_keys(uint32_t state, uint32_t changed, const bool this_side)
 {
     for (uint8_t idx = 0; idx < num_keys; idx++) {
         bool was_changed = changed >> idx & 0b1;
@@ -36,7 +58,13 @@ void usb_manager::process_keys(uint32_t state, uint32_t changed, const keycodes 
             continue;
         }
 
-        hid_key key = key_arr[idx];
+        hid_key key;
+        if (this_side) {
+            key = get_this_side_key(idx);
+        } else {
+            key = get_other_side_key(idx);
+        }
+
         bool state_ = state >> idx & 0b1;
 
         if (key.type == HIDType::Function && state_) {
@@ -58,11 +86,7 @@ void usb_manager::update_layers()
     uint8_t new_layer = base_layer;
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
-#if SIDE == 0
-        hid_key key = layers[layer].key_l[idx];
-#else
-        hid_key key = layers[layer].key_r[idx];
-#endif
+        hid_key key = get_this_side_key(idx);
         bool state_ = state_this >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
@@ -72,11 +96,7 @@ void usb_manager::update_layers()
     }
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
-#if SIDE == 0
-        hid_key key = layers[layer].key_r[idx];
-#else
-        hid_key key = layers[layer].key_l[idx];
-#endif
+        hid_key key = get_other_side_key(idx);
         bool state_ = state_other >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
@@ -145,18 +165,10 @@ void usb_manager::loop()
 
         // TODO: or layer changed
         if (changed_this) {
-#if SIDE == 0
-            process_keys(state_this, changed_this, layers[layer].key_l);
-#else
-            process_keys(state_this, changed_this, layers[layer].key_r);
-#endif
+            process_keys(state_this, changed_this, true);
         }
         if (changed_other) {
-#if SIDE == 0
-            process_keys(state_other, changed_other, layers[layer].key_r);
-#else
-            process_keys(state_other, changed_other, layers[layer].key_l);
-#endif
+            process_keys(state_other, changed_other, false);
         }
         if (changed_leds) {
             process_leds();

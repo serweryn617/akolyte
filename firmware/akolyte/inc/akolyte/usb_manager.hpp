@@ -36,8 +36,10 @@ public:
     void loop();
 
     void get_state();
-    void process_keys(uint32_t state, uint32_t changed, const keycodes &key_arr);
+    void process_keys(uint32_t state, uint32_t changed, const bool this_side);
     void update_layers();
     void get_leds();
     void process_leds();
+    hid_key get_this_side_key(uint8_t idx);
+    hid_key get_other_side_key(uint8_t idx);
 };

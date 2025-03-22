@@ -4,9 +4,11 @@
 #include "hardware/i2c.h"
 #include <array>
 
-constexpr uint left = 0;
-constexpr uint right = 1;
-constexpr uint side = SIDE;
+namespace config {
+    constexpr uint left = 0;
+    constexpr uint right = 1;
+    constexpr uint side = SIDE;
+}
 
 constexpr uint num_in_pins = 4;
 constexpr uint num_out_pins = 6;
