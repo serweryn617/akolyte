@@ -17,11 +17,11 @@ usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_call
 
 void usb_manager::get_state()
 {
-    state_left = keypad.get_state();
+    state_this = keypad.get_state();
 
-    uint8_t state_r_arr[4] = { 0, 0, 0, 0 };
-    int status = i2c_driver.read_data(state_r_arr, 4);
-    state_right = state_r_arr[0] + (state_r_arr[1] << 8) + (state_r_arr[2] << 16) + (state_r_arr[3] << 24);
+    uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
+    int status = i2c_driver.read_data(state_other_arr, 4);
+    state_other = state_other_arr[0] + (state_other_arr[1] << 8) + (state_other_arr[2] << 16) + (state_other_arr[3] << 24);
 
     if (status < 0) {
         worker_connected = false;
@@ -59,7 +59,7 @@ void usb_manager::update_layers()
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
         hid_key key = layers[layer].key_l[idx];
-        bool state_ = state_left >> idx & 0b1;
+        bool state_ = state_this >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
             new_layer = key.keycode;
@@ -69,7 +69,7 @@ void usb_manager::update_layers()
 
     for (uint8_t idx = 0; idx < num_keys; idx++) {
         hid_key key = layers[layer].key_r[idx];
-        bool state_ = state_right >> idx & 0b1;
+        bool state_ = state_other >> idx & 0b1;
 
         if (key.type == HIDType::Layer && state_) {
             new_layer = key.keycode;
@@ -124,23 +124,23 @@ void usb_manager::loop()
     uint64_t timestamp = time_us_64();
 
     while (true) {
-        state_left = 0;
-        state_right = 0;
+        state_this = 0;
+        state_other = 0;
 
         get_state();
         update_layers();
         get_leds();
 
-        uint32_t changed_left = state_left ^ state_left_previous;
-        uint32_t changed_right = state_right ^ state_right_previous;
+        uint32_t changed_this = state_this ^ state_this_previous;
+        uint32_t changed_other = state_other ^ state_other_previous;
         uint8_t changed_leds = leds ^ leds_previous;
 
         // TODO: or layer changed
-        if (changed_left) {
-            process_keys(state_left, changed_left, layers[layer].key_l);
+        if (changed_this) {
+            process_keys(state_this, changed_this, layers[layer].key_l);
         }
-        if (changed_right) {
-            process_keys(state_right, changed_right, layers[layer].key_r);
+        if (changed_other) {
+            process_keys(state_other, changed_other, layers[layer].key_r);
         }
         if (changed_leds) {
             process_leds();
@@ -149,8 +149,8 @@ void usb_manager::loop()
         tinyusb.device_task();
         tinyusb.hid_task();
 
-        state_left_previous = state_left;
-        state_right_previous = state_right;
+        state_this_previous = state_this;
+        state_other_previous = state_other;
         leds_previous = leds;
 
         if (!tinyusb.ready()) {

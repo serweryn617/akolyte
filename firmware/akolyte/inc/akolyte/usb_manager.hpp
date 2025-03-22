@@ -13,10 +13,10 @@
 class usb_manager
 {
 private:
-    uint32_t state_left = 0;
-    uint32_t state_right = 0;
-    uint32_t state_left_previous = 0;
-    uint32_t state_right_previous = 0;
+    uint32_t state_this = 0;
+    uint32_t state_other = 0;
+    uint32_t state_this_previous = 0;
+    uint32_t state_other_previous = 0;
 
     uint8_t leds = 0;
     uint8_t leds_previous = 0;
@@ -41,4 +41,3 @@ public:
     void get_leds();
     void process_leds();
 };
-
