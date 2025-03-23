@@ -1,5 +1,6 @@
 add_executable(${PROJECT_NAME}
     src/main.cpp
+    src/core1.cpp
     src/flow_selector.cpp
     src/usb_manager.cpp
     src/i2c_worker.cpp
