@@ -17,11 +17,11 @@ usb_manager::usb_manager(TinyUSB &_tinyusb, communication &_comms, tinyusb_callb
 
 void usb_manager::get_state()
 {
-    uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
     comms.request_capture_keys();
 
     state_this = keypad.get_state();
 
+    uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
     int status = comms.read_data(state_other_arr, 4);
     state_other = state_other_arr[0] + (state_other_arr[1] << 8) + (state_other_arr[2] << 16) + (state_other_arr[3] << 24);
 

@@ -25,7 +25,12 @@ public:
     void clear_slave_request();
     void slave_write_byte(uint8_t byte);
     bool slave_received();  // TODO: unused
-    uint8_t slave_get_byte();  // TODO: unused
+    uint8_t slave_read_byte();  // TODO: unused
+    size_t get_read_available();
+
+    uint8_t get_last_command();
+    uint8_t get_command_ready();
+    void set_command_ready(bool value);
 };
 
 }  // namespace drivers::i2c

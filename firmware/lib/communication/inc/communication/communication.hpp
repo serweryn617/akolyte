@@ -6,6 +6,11 @@
 
 namespace lib::communication {
 
+enum class command : uint8_t {
+    none,
+    capture_keys,
+};
+
 class communication
 {
 private:
@@ -24,7 +29,7 @@ public:
     void slave_write_byte(uint8_t byte);
 
     void request_capture_keys();
-    bool capture_keys_requested();
+    command get_command();
 };
 
 }  // namespace lib::communication
