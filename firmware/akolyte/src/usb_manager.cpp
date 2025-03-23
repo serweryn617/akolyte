@@ -2,10 +2,11 @@
 #include "akolyte/keycodes.hpp"
 #include "defs/defs.hpp"
 
+using namespace lib::communication;
 using namespace lib::keypad;
 using namespace lib::queue;
 
-usb_manager::usb_manager(TinyUSB &_tinyusb, lib::communication::communication &_comms, tinyusb_callback &_tusb_cb, Keypad &_keypad, Queue &queue_)
+usb_manager::usb_manager(TinyUSB &_tinyusb, communication &_comms, tinyusb_callback &_tusb_cb, Keypad &_keypad, Queue &queue_)
     : tinyusb(_tinyusb)
     , comms(_comms)
     , tusb_cb(_tusb_cb)
@@ -16,9 +17,11 @@ usb_manager::usb_manager(TinyUSB &_tinyusb, lib::communication::communication &_
 
 void usb_manager::get_state()
 {
+    uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
+    comms.request_capture_keys();
+
     state_this = keypad.get_state();
 
-    uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
     int status = comms.read_data(state_other_arr, 4);
     state_other = state_other_arr[0] + (state_other_arr[1] << 8) + (state_other_arr[2] << 16) + (state_other_arr[3] << 24);
 

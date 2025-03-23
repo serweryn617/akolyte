@@ -19,8 +19,12 @@ public:
     int write_data(const uint8_t *buffer, uint32_t length = 1, uint32_t timeout = 0);
     void set_slave_mode(bool is_slave);
     bool slave_requested();
+    bool slave_received();
     void clear_slave_request();
     void slave_write_byte(uint8_t byte);
+
+    void request_capture_keys();
+    bool capture_keys_requested();
 };
 
 }  // namespace lib::communication
