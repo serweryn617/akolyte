@@ -1,6 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt update && apt install -y \
+    git \
     cmake \
     gcc-arm-none-eabi \
     libnewlib-arm-none-eabi \
