@@ -34,12 +34,12 @@ bool TinyUSB::keyboard_report()
     uint8_t instance = 0;
     uint8_t report_id = REPORT_ID_KEYBOARD;
 
-    hid_keyboard_report report;
+    hid_keyboard_report report{};
 
     report.modifiers = modifiers;
     report.reserved = 0;
 
-    memcpy(report.keycodes, keycodes, num_keycodes);
+    memcpy(report.keycodes, keycodes, index);
 
     return tud_hid_n_report(instance, report_id, &report, sizeof(report));
 }
