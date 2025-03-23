@@ -3,10 +3,6 @@
 
 namespace lib::communication {
 
-enum class command : uint8_t {
-    capture_keys,
-};
-
 communication::communication(drivers::i2c::I2CDriver &_i2c_driver)
     : i2c_driver(_i2c_driver)
 {
@@ -49,8 +45,17 @@ void communication::request_capture_keys() {
     i2c_driver.write_data(&command, 1, 0);
 }
 
-bool communication::capture_keys_requested() {
-    return true;
+command communication::get_command() {
+    bool command_ready = i2c_driver.get_command_ready();
+
+    if (command_ready == false) {
+        return command::none;
+    }
+
+    uint8_t cmd = i2c_driver.get_last_command();
+    i2c_driver.set_command_ready(false);
+
+    return static_cast<command>(cmd);
 }
 
 }  // namespace lib::communication

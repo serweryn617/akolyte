@@ -1,8 +1,9 @@
 #include "akolyte/i2c_worker.hpp"
 
+using namespace lib::communication;
 using namespace lib::keypad;
 
-i2c_worker::i2c_worker(lib::communication::communication &_comms, Keypad &_keypad)
+i2c_worker::i2c_worker(communication &_comms, Keypad &_keypad)
     : comms(_comms)
     , keypad(_keypad)
 {
@@ -16,7 +17,8 @@ void i2c_worker::loop()
     // TODO: assert i2c is set to slave mode
     while (true)
     {
-        if (comms.capture_keys_requested()) {
+        command cmd = comms.get_command();
+        if (cmd == command::capture_keys) {
             state = keypad.get_state();
         }
 
