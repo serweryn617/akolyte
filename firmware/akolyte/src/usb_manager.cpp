@@ -2,13 +2,12 @@
 #include "akolyte/keycodes.hpp"
 #include "defs/defs.hpp"
 
-using namespace drivers::i2c;
 using namespace lib::keypad;
 using namespace lib::queue;
 
-usb_manager::usb_manager(TinyUSB &_tinyusb, I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, Keypad &_keypad, Queue &queue_)
+usb_manager::usb_manager(TinyUSB &_tinyusb, lib::communication::communication &_comms, tinyusb_callback &_tusb_cb, Keypad &_keypad, Queue &queue_)
     : tinyusb(_tinyusb)
-    , i2c_driver(_i2c_driver)
+    , comms(_comms)
     , tusb_cb(_tusb_cb)
     , keypad(_keypad)
     , queue(queue_)
@@ -20,7 +19,7 @@ void usb_manager::get_state()
     state_this = keypad.get_state();
 
     uint8_t state_other_arr[4] = { 0, 0, 0, 0 };
-    int status = i2c_driver.read_data(state_other_arr, 4);
+    int status = comms.read_data(state_other_arr, 4);
     state_other = state_other_arr[0] + (state_other_arr[1] << 8) + (state_other_arr[2] << 16) + (state_other_arr[3] << 24);
 
     if (status < 0) {

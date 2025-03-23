@@ -1,19 +1,19 @@
 #include "akolyte/flow_selector.hpp"
 
-flow_selector::flow_selector(TinyUSB &_tiny_usb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker)
+flow_selector::flow_selector(TinyUSB &_tiny_usb, lib::communication::communication &_comms, tinyusb_callback &_tusb_cb,  usb_manager &_manager, i2c_worker &_worker)
     : tiny_usb(_tiny_usb)
-    , i2c_driver(_i2c_driver)
     , tusb_cb(_tusb_cb)
     , manager(_manager)
     , worker(_worker)
+    , comms(_comms)
 {
 }
 
 void flow_selector::init_all()
 {
     tiny_usb.init();
-    i2c_driver.init();
-    i2c_driver.set_slave_mode(true);
+    comms.init();
+    comms.set_slave_mode(true);
 }
 
 void flow_selector::start()
@@ -31,12 +31,12 @@ void flow_selector::start()
             uint8_t message = 1;
             // queue_add_blocking(&inter_core_queue, &message);
 
-            i2c_driver.set_slave_mode(false);
+            comms.set_slave_mode(false);
             manager.loop();
-            i2c_driver.set_slave_mode(true);
+            comms.set_slave_mode(true);
         }
 
-        if (i2c_driver.slave_requested()) {
+        if (comms.slave_requested()) {
             uint8_t message = 2;
             // queue_add_blocking(&inter_core_queue, &message);
 

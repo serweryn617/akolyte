@@ -1,13 +1,13 @@
 #pragma once
 
 #include "pico/stdlib.h"
-#include "i2c/i2c_driver.h"
 #include "hid_keycodes.hpp"
 #include "tinyusb.hpp"
 #include "types.h"
 #include "keypad/keypad.hpp"
 #include "akolyte/keycodes.hpp"
 #include "queue/queue.hpp"
+#include "communication/communication.hpp"
 #include <array>
 
 class usb_manager
@@ -26,13 +26,13 @@ private:
     bool worker_connected = false;
 
     TinyUSB &tinyusb;
-    drivers::i2c::I2CDriver &i2c_driver;
+    lib::communication::communication &comms;
     tinyusb_callback &tusb_cb;
     lib::keypad::Keypad &keypad;
     lib::queue::Queue &queue;
 
 public:
-    usb_manager(TinyUSB &_tinyusb, drivers::i2c::I2CDriver &_i2c_driver, tinyusb_callback &_tusb_cb, lib::keypad::Keypad &_keypad, lib::queue::Queue &queue_);
+    usb_manager(TinyUSB &_tinyusb, lib::communication::communication &_comms, tinyusb_callback &_tusb_cb, lib::keypad::Keypad &_keypad, lib::queue::Queue &queue_);
     void loop();
 
     void get_state();

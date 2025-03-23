@@ -5,6 +5,7 @@
 #include "pico/util/queue.h"
 
 #include "i2c/i2c_driver.h"
+#include "communication/communication.hpp"
 #include "defs/defs.hpp"
 #include "keypad/keypad.hpp"
 #include "queue/queue.hpp"
@@ -93,10 +94,12 @@ int main()
 
     TinyUSB t_usb(global_tinyusb_callback);
     drivers::i2c::I2CDriver i2c_driver(i2c1, ext_i2c_sda, ext_i2c_scl, 0x55);
+    lib::communication::communication comms(i2c_driver);
+
     Keypad keypad(keypad_in_pins, keypad_out_pins);
-    usb_manager manager(t_usb, i2c_driver, global_tinyusb_callback, keypad, queue);
-    i2c_worker worker(i2c_driver, keypad);
-    flow_selector selector(t_usb, i2c_driver, global_tinyusb_callback, manager, worker);
+    usb_manager manager(t_usb, comms, global_tinyusb_callback, keypad, queue);
+    i2c_worker worker(comms, keypad);
+    flow_selector selector(t_usb, comms, global_tinyusb_callback, manager, worker);
 
     multicore_launch_core1(core1_main);
 

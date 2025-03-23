@@ -14,10 +14,10 @@ target_link_libraries(${PROJECT_NAME}
     pico_multicore
     tinyusb
     ssd1306
-    i2c_driver
     keypad
     queue
     defs
+    communication
 )
 
 # Create map/bin/hex/uf2 files

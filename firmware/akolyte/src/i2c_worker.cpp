@@ -2,8 +2,8 @@
 
 using namespace lib::keypad;
 
-i2c_worker::i2c_worker(drivers::i2c::I2CDriver &_i2c_driver, Keypad &_keypad)
-    : i2c_driver(_i2c_driver)
+i2c_worker::i2c_worker(lib::communication::communication &_comms, Keypad &_keypad)
+    : comms(_comms)
     , keypad(_keypad)
 {
 }
@@ -15,15 +15,15 @@ void i2c_worker::loop()
     // TODO: assert i2c is set to slave mode
     while (true)
     {
-        if (i2c_driver.slave_requested()) {
+        if (comms.slave_requested()) {
             uint32_t state = keypad.get_state();
 
-            i2c_driver.slave_write_byte((state >> 0) & 0xff);
-            i2c_driver.slave_write_byte((state >> 8) & 0xff);
-            i2c_driver.slave_write_byte((state >> 16) & 0xff);
-            i2c_driver.slave_write_byte((state >> 24) & 0xff);
+            comms.slave_write_byte((state >> 0) & 0xff);
+            comms.slave_write_byte((state >> 8) & 0xff);
+            comms.slave_write_byte((state >> 16) & 0xff);
+            comms.slave_write_byte((state >> 24) & 0xff);
 
-            i2c_driver.clear_slave_request();
+            comms.clear_slave_request();
             last_reqest_time = time_us_64();
             // uart_puts(uart0, "worker: requested, sent\r\n");
         }
