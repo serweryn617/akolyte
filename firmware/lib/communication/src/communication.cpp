@@ -10,6 +10,7 @@ communication::communication(drivers::i2c::I2CDriver &_i2c_driver)
 
 void communication::init() {
     i2c_driver.init();
+    command_buffer = i2c_driver.get_command_address();
 }
 
 int communication::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout) {
@@ -46,16 +47,13 @@ void communication::request_capture_keys() {
 }
 
 command communication::get_command() {
-    bool command_ready = i2c_driver.get_command_ready();
+    uint8_t command_size = i2c_driver.get_command_size();
 
-    if (command_ready == false) {
+    if (command_size == 0) {
         return command::none;
     }
 
-    uint8_t cmd = i2c_driver.get_last_command();
-    i2c_driver.set_command_ready(false);
-
-    return static_cast<command>(cmd);
+    return static_cast<command>(command_buffer[0]);
 }
 
 }  // namespace lib::communication

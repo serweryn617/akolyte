@@ -3,13 +3,16 @@
 
 namespace drivers::i2c {
 
+static constexpr unsigned command_buffer_size = 16;
+
 volatile static bool to_send = 0;
 volatile static bool to_receive = 0;
 
-static struct
-{
+static struct {
     uint8_t state[4] = {};
-    uint8_t last_command = 0;
+
+    uint8_t command[command_buffer_size] = {};
+    uint8_t command_size = 0;
     bool command_ready = false;
 } global_context;
 
@@ -17,7 +20,16 @@ void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
     switch (event) {
     case I2C_SLAVE_RECEIVE:
         to_receive = true;
-        global_context.last_command = i2c_read_byte_raw(i2c);
+
+        if (global_context.command_ready == true) {
+            global_context.command_ready = false;
+            global_context.command_size = 0;
+        }
+
+        if (global_context.command_size < command_buffer_size) {
+            global_context.command[global_context.command_size++] = i2c_read_byte_raw(i2c);
+        }
+
         break;
     case I2C_SLAVE_REQUEST:
         to_send = true;
@@ -101,20 +113,16 @@ void I2CDriver::set_slave_mode(bool slave)
     }
 }
 
-size_t I2CDriver::get_read_available() {
-    return i2c_get_read_available(i2c_inst_);
+uint8_t* I2CDriver::get_command_address() {
+    return global_context.command;
 }
 
-uint8_t I2CDriver::get_last_command() {
-    return global_context.last_command;
-}
+uint8_t I2CDriver::get_command_size() {
+    if (global_context.command_ready) {
+        return global_context.command_size;
+    }
 
-uint8_t I2CDriver::get_command_ready() {
-    return global_context.command_ready;
-}
-
-void I2CDriver::set_command_ready(bool value) {
-    global_context.command_ready = value;
+    return 0;
 }
 
 }  // namespace drivers::i2c
