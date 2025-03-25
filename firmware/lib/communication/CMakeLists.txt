@@ -9,4 +9,5 @@ target_include_directories(communication PUBLIC
 target_link_libraries(communication PUBLIC
     pico_stdlib
     i2c_driver
+    crc
 )

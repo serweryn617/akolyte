@@ -11,7 +11,7 @@ i2c_worker::i2c_worker(communication &_comms, Keypad &_keypad)
 
 void i2c_worker::process_commands() {
     command cmd = comms.get_command();
-    if (cmd == command::capture_keys) {
+    if (cmd.get_type() == command_type::capture_keys) {
         state = keypad.get_state();
     }
 }
