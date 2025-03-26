@@ -1,6 +1,7 @@
 #ifndef LIB_COMMUNICATION_COMMUNICATION_HPP
 #define LIB_COMMUNICATION_COMMUNICATION_HPP
 
+#include <optional>
 #include <span>
 #include "pico/stdlib.h"
 #include "i2c/i2c_driver.h"
@@ -17,18 +18,15 @@ class command
 private:
     command_type type = command_type::none;
     std::span<uint8_t> payload;
-    uint8_t crc = 0;
 
 public:
-    command(command_type _type, std::span<uint8_t> _payload, uint8_t _crc)
+    command(command_type _type, std::span<uint8_t> _payload)
         : type(_type)
         , payload(_payload)
-        , crc(_crc)
     {}
 
     command_type get_type();
     std::span<uint8_t> get_payload();
-    bool validate();
 };
 
 class communication
@@ -50,7 +48,7 @@ public:
     void slave_write_byte(uint8_t byte);
 
     void request_capture_keys();
-    command get_command();
+    std::optional<command> get_command();
 };
 
 }  // namespace lib::communication

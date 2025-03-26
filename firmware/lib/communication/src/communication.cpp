@@ -1,3 +1,4 @@
+#include <optional>
 #include <span>
 #include "pico/stdlib.h"
 #include "communication/communication.hpp"
@@ -13,13 +14,6 @@ command_type command::get_type() {
 
 std::span<uint8_t> command::get_payload() {
     return payload;
-}
-
-bool command::validate() {
-    uint8_t type_value = static_cast<uint8_t>(type);
-    uint8_t initial_crc = crc8(std::span<uint8_t>(&type_value, 1));
-    uint8_t expected_crc = crc8(payload, initial_crc);
-    return crc == expected_crc;
 }
 
 communication::communication(drivers::i2c::I2CDriver &_i2c_driver)
@@ -63,25 +57,30 @@ void communication::slave_write_byte(uint8_t byte) {
 void communication::request_capture_keys() {
     uint8_t type_value = static_cast<uint8_t>(command_type::capture_keys);
 
-    uint8_t command[2];
-    command[0] = type_value;
-    command[1] = crc8(std::span<uint8_t>(&type_value, 1));
+    uint8_t command_buffer[2];
+    command_buffer[0] = type_value;
+    command_buffer[1] = crc8(std::span<uint8_t>(&type_value, 1));
 
-    i2c_driver.write_data(command, 2, 0);
+    i2c_driver.write_data(command_buffer, 2, 0);
 }
 
-command communication::get_command() {
+std::optional<command> communication::get_command() {
     uint8_t command_size = i2c_driver.get_command_size();
 
     if (command_size < 2) {
-        // return command(command_type::none, std::span<uint8_t>(nullptr, 0), 0);
+        return std::nullopt;
+    }
+
+    uint8_t command_crc = command_buffer[command_size - 1];
+    uint8_t expected_crc = crc8(std::span<uint8_t>(command_buffer, command_size - 1));
+    if (command_crc != expected_crc) {
+        return std::nullopt;
     }
 
     command_type type = static_cast<command_type>(command_buffer[0]);
     std::span<uint8_t> payload = std::span<uint8_t>(command_buffer + 1, command_size - 2);
-    uint8_t crc = command_buffer[command_size - 1];
 
-    return command(type, payload, crc);
+    return command(type, payload);
 }
 
 }  // namespace lib::communication

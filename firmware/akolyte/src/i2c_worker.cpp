@@ -1,5 +1,7 @@
 #include "akolyte/i2c_worker.hpp"
 
+#include <optional>
+
 using namespace lib::communication;
 using namespace lib::keypad;
 
@@ -10,8 +12,13 @@ i2c_worker::i2c_worker(communication &_comms, Keypad &_keypad)
 }
 
 void i2c_worker::process_commands() {
-    command cmd = comms.get_command();
-    if (cmd.get_type() == command_type::capture_keys) {
+    std::optional<command> cmd = comms.get_command();
+
+    if (!cmd) {
+        return;
+    }
+
+    if (cmd->get_type() == command_type::capture_keys) {
         state = keypad.get_state();
     }
 }
