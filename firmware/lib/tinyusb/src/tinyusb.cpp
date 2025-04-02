@@ -197,11 +197,11 @@ void TinyUSB::add_keycode(uint8_t keycode)
 
 void TinyUSB::remove_keycode(uint8_t keycode)
 {
-    for (uint8_t i = 0; i < num_keycodes; i++) {
+    for (uint8_t i = 0; i < index; i++) {
         if (keycodes[i] == keycode) {
             uint8_t *dst = &keycodes[i];
             uint8_t *src = &keycodes[i + 1];
-            uint32_t size = (num_keycodes - i - 1) * sizeof(uint8_t);
+            uint32_t size = (index - i - 1) * sizeof(uint8_t);
 
             memmove(dst, src, size);
             index--;
