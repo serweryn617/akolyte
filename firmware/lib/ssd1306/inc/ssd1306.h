@@ -18,6 +18,7 @@ public:
     void fill(bool val);
     void set_pixel(uint8_t x, uint8_t y, bool val);
     void print_string(const char *str, uint8_t font_size);
+    void print_indicator(bool on, uint8_t font_size);
     void display();
     void set_cursor(uint8_t x, uint8_t y);
 

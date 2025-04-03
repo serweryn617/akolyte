@@ -110,3 +110,20 @@ void ssd1306::print_string(const char *str, uint8_t font_size)
         }
     }
 }
+
+void ssd1306::print_indicator(bool on, uint8_t font_size)
+{
+    uint8_t indicator = on ? 0x81 : 0x80;
+    if (font_size == 8) {
+        print_char(font_8x5, indicator);
+        cursor_x += font_8x5.width + 1;
+    }
+    else if (font_size == 16) {
+        print_char(font_16x10, indicator);
+        cursor_x += font_16x10.width + 2;
+    }
+    else if (font_size == 32) {
+        print_char(font_32x20, indicator);
+        cursor_x += font_32x20.width + 4;
+    }
+}

@@ -147,6 +147,12 @@ void usb_manager::process_leds()
     } else if (!(leds & KEYBOARD_LED_CAPSLOCK) && (leds_previous & KEYBOARD_LED_CAPSLOCK)) {
         queue.add(Command::caps_off);
     }
+
+    if ((leds & KEYBOARD_LED_NUMLOCK) && !(leds_previous & KEYBOARD_LED_NUMLOCK)) {
+        queue.add(Command::num_on);
+    } else if (!(leds & KEYBOARD_LED_NUMLOCK) && (leds_previous & KEYBOARD_LED_NUMLOCK)) {
+        queue.add(Command::num_off);
+    }
 }
 
 void usb_manager::loop()
