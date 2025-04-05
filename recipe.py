@@ -45,7 +45,7 @@ projects['setup'] = {
 projects['build'] = {
     'components': [
         'build_firmware_docker',
-        'copy_compile_commands',
+        'compile_commands',
     ],
 }
 
@@ -71,33 +71,17 @@ projects['build_firmware_docker'] = {
 
     'build_steps': [
         'mkdir -p build/generated/pio',
+        BuildStep(command=docker_command("cd /workspace/build && cmake ../firmware -GNinja && ninja")),
 
-        BuildStep(command=docker_command("cd /workspace/build && cmake ../firmware -GNinja -DSIDE=0 && cmake --build . -j")),
-        BuildStep(command='cp build/akolyte/akolyte.uf2 akolyte_left.uf2'),
-
-        BuildStep(command=docker_command("cd /workspace/build && cmake ../firmware -GNinja -DSIDE=1 && cmake --build . -j")),
-        BuildStep(command='cp build/akolyte/akolyte.uf2 akolyte_right.uf2'),
+        'mkdir -p output',
+        BuildStep(command='cp build/akolyte/akolyte_left.uf2 output/akolyte_left.uf2'),
+        BuildStep(command='cp build/akolyte/akolyte_right.uf2 output/akolyte_right.uf2'),
     ],
 }
 
 
-projects['build_firmware'] = [
-    BuildStep(command='mkdir -p build'),
-    ('build', 'mkdir -p generated/pio'),
-
-    ('build', 'cmake ../firmware -GNinja -DSIDE=0'),
-    ('build', 'cmake --build . -j'),
-    'cp build/akolyte/akolyte.uf2 akolyte_left.uf2',
-
-    ('build', 'cmake ../firmware -GNinja -DSIDE=1'),
-    ('build', 'cmake --build . -j'),
-    'cp build/akolyte/akolyte.uf2 akolyte_right.uf2',
-]
-
-
-projects['copy_compile_commands'] = [
-    'cp build/compile_commands.json .vscode/compile_commands.json',
-    ('.vscode', f'sed -i "s#/workspace#{Path.cwd()}#g" compile_commands.json'),  # TODO: use build dir instead of vscode
+projects['compile_commands'] = [
+    ('build', f'sed -i "s#/workspace#{Path.cwd()}#g" compile_commands.json'),
 ]
 
 

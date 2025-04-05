@@ -4,3 +4,4 @@ venv
 *.uf2
 build
 .cache
+output
