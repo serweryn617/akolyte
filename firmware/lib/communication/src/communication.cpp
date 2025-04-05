@@ -64,6 +64,28 @@ void communication::request_capture_keys() {
     i2c_driver.write_data(command_buffer, 2, 0);
 }
 
+void communication::request_set_layer(uint8_t layer) {
+    uint8_t type_value = static_cast<uint8_t>(command_type::set_layer);
+
+    uint8_t command_buffer[3];
+    command_buffer[0] = type_value;
+    command_buffer[1] = layer;
+    command_buffer[2] = crc8(std::span<uint8_t>(command_buffer, 2));
+
+    i2c_driver.write_data(command_buffer, 3, 0);
+}
+
+void communication::request_set_leds(uint8_t leds) {
+    uint8_t type_value = static_cast<uint8_t>(command_type::set_leds);
+
+    uint8_t command_buffer[3];
+    command_buffer[0] = type_value;
+    command_buffer[1] = leds;
+    command_buffer[2] = crc8(std::span<uint8_t>(command_buffer, 2));
+
+    i2c_driver.write_data(command_buffer, 3, 0);
+}
+
 std::optional<command> communication::get_command() {
     uint8_t command_size = i2c_driver.get_command_size();
 

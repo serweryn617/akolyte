@@ -11,6 +11,8 @@ namespace lib::communication {
 enum class command_type : uint8_t {
     none,
     capture_keys,
+    set_layer,
+    set_leds,
 };
 
 class command
@@ -48,6 +50,8 @@ public:
     void slave_write_byte(uint8_t byte);
 
     void request_capture_keys();
+    void request_set_layer(uint8_t layer);
+    void request_set_leds(uint8_t leds);
     std::optional<command> get_command();
 };
 
