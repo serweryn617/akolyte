@@ -52,7 +52,7 @@ I2CDriver::I2CDriver(i2c_inst_t *i2c_inst, uint8_t pin_sda, uint8_t pin_scl, uin
 
 void I2CDriver::init()
 {
-    i2c_init(i2c_inst_, 800 * 1000);
+    i2c_init(i2c_inst_, 200 * 1000);
     gpio_set_function(pin_sda_, GPIO_FUNC_I2C);
     gpio_set_function(pin_scl_, GPIO_FUNC_I2C);
     gpio_pull_up(pin_sda_);
