@@ -88,3 +88,6 @@ projects['compile_commands'] = [
 projects['docker_interactive'] = [
     docker_command(interactive=True)
 ]
+
+# TODO: add
+# picocom -b 115200 /dev/ttyUSB0 --imap lfcrlfs

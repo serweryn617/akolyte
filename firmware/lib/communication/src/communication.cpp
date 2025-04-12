@@ -23,7 +23,7 @@ communication::communication(drivers::i2c::I2CDriver &_i2c_driver)
 
 void communication::init() {
     i2c_driver.init();
-    command_buffer = i2c_driver.get_command_address();
+    m_command_buffer = i2c_driver.get_command_address();
 }
 
 int communication::read_data(uint8_t *buffer, uint32_t length, uint32_t timeout) {
@@ -64,6 +64,28 @@ void communication::request_capture_keys() {
     i2c_driver.write_data(command_buffer, 2, 0);
 }
 
+void communication::request_set_layer(uint8_t layer) {
+    uint8_t type_value = static_cast<uint8_t>(command_type::set_layer);
+
+    uint8_t command_buffer[3];
+    command_buffer[0] = type_value;
+    command_buffer[1] = layer;
+    command_buffer[2] = crc8(std::span<uint8_t>(command_buffer, 2));
+
+    i2c_driver.write_data(command_buffer, 3, 0);
+}
+
+void communication::request_set_leds(uint8_t leds) {
+    uint8_t type_value = static_cast<uint8_t>(command_type::set_leds);
+
+    uint8_t command_buffer[3];
+    command_buffer[0] = type_value;
+    command_buffer[1] = leds;
+    command_buffer[2] = crc8(std::span<uint8_t>(command_buffer, 2));
+
+    i2c_driver.write_data(command_buffer, 3, 0);
+}
+
 std::optional<command> communication::get_command() {
     uint8_t command_size = i2c_driver.get_command_size();
 
@@ -71,14 +93,14 @@ std::optional<command> communication::get_command() {
         return std::nullopt;
     }
 
-    uint8_t command_crc = command_buffer[command_size - 1];
-    uint8_t expected_crc = crc8(std::span<uint8_t>(command_buffer, command_size - 1));
+    uint8_t command_crc = m_command_buffer[command_size - 1];
+    uint8_t expected_crc = crc8(std::span<uint8_t>(m_command_buffer, command_size - 1));
     if (command_crc != expected_crc) {
         return std::nullopt;
     }
 
-    command_type type = static_cast<command_type>(command_buffer[0]);
-    std::span<uint8_t> payload = std::span<uint8_t>(command_buffer + 1, command_size - 2);
+    command_type type = static_cast<command_type>(m_command_buffer[0]);
+    std::span<uint8_t> payload = std::span<uint8_t>(m_command_buffer + 1, command_size - 2);
 
     return command(type, payload);
 }

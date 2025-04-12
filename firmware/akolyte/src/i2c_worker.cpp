@@ -1,13 +1,17 @@
-#include "akolyte/i2c_worker.hpp"
-
 #include <optional>
+#include <span>
+#include <cstdint>
+#include "akolyte/i2c_worker.hpp"
+#include "tusb.h"
 
 using namespace lib::communication;
 using namespace lib::keypad;
+using namespace lib::queue;
 
-i2c_worker::i2c_worker(communication &_comms, Keypad &_keypad)
+i2c_worker::i2c_worker(communication &_comms, Keypad &_keypad, Queue &queue_)
     : comms(_comms)
     , keypad(_keypad)
+    , queue(queue_)
 {
 }
 
@@ -18,8 +22,34 @@ void i2c_worker::process_commands() {
         return;
     }
 
-    if (cmd->get_type() == command_type::capture_keys) {
+    switch (cmd->get_type())
+    {
+    case command_type::capture_keys:
         state = keypad.get_state();
+        break;
+
+    case command_type::set_layer:
+        {
+            std::span<uint8_t> payload = cmd->get_payload();
+            if (payload.size() == 1) {
+                uint8_t layer = payload[0];
+                process_layer(layer);
+            }
+        }
+        break;
+
+    case command_type::set_leds:
+        {
+            std::span<uint8_t> payload = cmd->get_payload();
+            if (payload.size() == 1) {
+                uint8_t leds = payload[0];
+                process_leds(leds);
+            }
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -34,6 +64,33 @@ bool i2c_worker::process_slave_request() {
         comms.clear_slave_request();
     }
     return requested;
+}
+
+void i2c_worker::process_leds(uint8_t leds)
+{
+    bool caps_led = leds & KEYBOARD_LED_CAPSLOCK;
+    if (caps_led) {
+        queue.add(Command::caps_on);
+    } else {
+        queue.add(Command::caps_off);
+    }
+
+    bool num_led = leds & KEYBOARD_LED_NUMLOCK;
+    if (num_led) {
+        queue.add(Command::num_on);
+    } else {
+        queue.add(Command::num_off);
+    }
+}
+
+void i2c_worker::process_layer(uint8_t layer)
+{
+    if (layer == 0) queue.add(Command::layer_0);
+    else if (layer == 1) queue.add(Command::layer_1);
+    else if (layer == 2) queue.add(Command::layer_2);
+    else if (layer == 3) queue.add(Command::layer_3);
+    else if (layer == 4) queue.add(Command::layer_4);
+    else if (layer == 5) queue.add(Command::layer_5);
 }
 
 void i2c_worker::loop()
