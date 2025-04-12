@@ -119,7 +119,12 @@ uint8_t* I2CDriver::get_command_address() {
 
 uint8_t I2CDriver::get_command_size() {
     if (global_context.command_ready) {
-        return global_context.command_size;
+        uint8_t tmp_size = global_context.command_size;
+
+        global_context.command_ready = false;
+        global_context.command_size = 0;
+
+        return tmp_size;
     }
 
     return 0;
