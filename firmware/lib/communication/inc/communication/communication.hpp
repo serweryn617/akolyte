@@ -35,7 +35,7 @@ class communication
 {
 private:
     drivers::i2c::I2CDriver &i2c_driver;
-    uint8_t* command_buffer = nullptr;
+    uint8_t* m_command_buffer = nullptr;
 
 public:
     communication(drivers::i2c::I2CDriver &_i2c_driver);
