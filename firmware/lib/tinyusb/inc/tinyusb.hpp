@@ -4,19 +4,19 @@
 #include "pico/stdlib.h"
 #include "types.h"
 
-constexpr int num_keycodes = 12;
+constexpr int num_bytes = 28;
 
 typedef struct __attribute__((packed))
 {
-    uint8_t modifiers;              /**< Keyboard modifier (KEYBOARD_MODIFIER_* masks). */
-    uint8_t reserved;               /**< Reserved for OEM use, always set to 0. */
-    uint8_t keycodes[num_keycodes]; /**< Key codes of the currently pressed keys. */
+    uint8_t modifiers;
+    uint8_t reserved;
+    uint8_t keycodes[num_bytes];
 } hid_keyboard_report;
 
 class TinyUSB
 {
 private:
-    uint8_t keycodes[num_keycodes];
+    uint8_t keycodes[num_bytes * 8];
     uint8_t index;
     uint8_t modifiers;
 

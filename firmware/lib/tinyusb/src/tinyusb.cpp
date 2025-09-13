@@ -10,7 +10,7 @@
 
 TinyUSB::TinyUSB(tinyusb_callback &_tusb_cb)
     : tusb_cb(_tusb_cb)
-    , keycodes({ 0 })
+    , keycodes{}
     , index(0)
     , reversed_shift(false)
     , modifiers(0)
@@ -39,7 +39,16 @@ bool TinyUSB::keyboard_report()
     report.modifiers = modifiers;
     report.reserved = 0;
 
-    memcpy(report.keycodes, keycodes, index);
+    for (uint8_t i = 0; i < index; i++)
+    {
+        uint8_t keycode = keycodes[i];
+        uint8_t byte_num = keycode / 8;
+        uint8_t bit_num = keycode % 8;
+
+        // TODO: validate index
+        report.keycodes[byte_num] |= (0b1 << bit_num);
+    }
+
 
     return tud_hid_n_report(instance, report_id, &report, sizeof(report));
 }
@@ -188,7 +197,7 @@ void TinyUSB::reverse_shift()
 
 void TinyUSB::add_keycode(uint8_t keycode)
 {
-    if (index == num_keycodes) {
+    if (index == num_bytes) {
         remove_keycode(keycodes[0]);
     }
 

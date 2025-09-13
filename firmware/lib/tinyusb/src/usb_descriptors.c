@@ -107,13 +107,13 @@ uint8_t const * tud_descriptor_device_cb(void)
       HID_OUTPUT       ( HID_CONSTANT                            ) ,\
     /* 6-byte Keycodes */ \
     HID_USAGE_PAGE ( HID_USAGE_PAGE_KEYBOARD )                     ,\
-      HID_USAGE_MIN    ( 0                                   )     ,\
-      HID_USAGE_MAX_N  ( 255, 2                              )     ,\
-      HID_LOGICAL_MIN  ( 0                                   )     ,\
-      HID_LOGICAL_MAX_N( 255, 2                              )     ,\
-      HID_REPORT_COUNT ( 12                                  )     ,\
-      HID_REPORT_SIZE  ( 8                                   )     ,\
-      HID_INPUT        ( HID_DATA | HID_ARRAY | HID_ABSOLUTE )     ,\
+      HID_USAGE_MIN    ( 0                                      )     ,\
+      HID_USAGE_MAX    ( 224                                    )     ,\
+      HID_LOGICAL_MIN  ( 0                                      )     ,\
+      HID_LOGICAL_MAX  ( 1                                      )     ,\
+      HID_REPORT_COUNT ( 224                                    )     ,\
+      HID_REPORT_SIZE  ( 1                                      )     ,\
+      HID_INPUT        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE )     ,\
   HID_COLLECTION_END \
 
 uint8_t const desc_hid_report[] =
