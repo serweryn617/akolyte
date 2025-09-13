@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "akolyte/usb_manager.hpp"
 #include "akolyte/keycodes.hpp"
 #include "defs/defs.hpp"
@@ -109,12 +110,16 @@ void usb_manager::update_layers()
 
     // Deactivate all pressed keys which change in new layer
     if (new_layer != layer) {
-        if (new_layer == 0) queue.add(Command::layer_0);
-        else if (new_layer == 1) queue.add(Command::layer_1);
-        else if (new_layer == 2) queue.add(Command::layer_2);
-        else if (new_layer == 3) queue.add(Command::layer_3);
-        else if (new_layer == 4) queue.add(Command::layer_4);
-        else if (new_layer == 5) queue.add(Command::layer_5);
+        if constexpr (config::side == config::left) {
+            if (new_layer == 0) queue.add(Command::layer_0);
+            else if (new_layer == 1) queue.add(Command::layer_1);
+            else if (new_layer == 2) queue.add(Command::layer_2);
+            else if (new_layer == 3) queue.add(Command::layer_3);
+            else if (new_layer == 4) queue.add(Command::layer_4);
+            else if (new_layer == 5) queue.add(Command::layer_5);
+        } else {
+            comms.request_set_layer(new_layer);
+        }
 
         for (uint8_t idx = 0; idx < num_keys; idx++) {
             hid_key current_key_l = layers[layer].key_l[idx];
@@ -142,10 +147,20 @@ void usb_manager::get_leds()
 
 void usb_manager::process_leds()
 {
-    if ((leds & KEYBOARD_LED_CAPSLOCK) && !(leds_previous & KEYBOARD_LED_CAPSLOCK)) {
-        queue.add(Command::caps_on);
-    } else if (!(leds & KEYBOARD_LED_CAPSLOCK) && (leds_previous & KEYBOARD_LED_CAPSLOCK)) {
-        queue.add(Command::caps_off);
+    if constexpr (config::side == config::left) {
+        if ((leds & KEYBOARD_LED_CAPSLOCK) && !(leds_previous & KEYBOARD_LED_CAPSLOCK)) {
+            queue.add(Command::caps_on);
+        } else if (!(leds & KEYBOARD_LED_CAPSLOCK) && (leds_previous & KEYBOARD_LED_CAPSLOCK)) {
+            queue.add(Command::caps_off);
+        }
+
+        if ((leds & KEYBOARD_LED_NUMLOCK) && !(leds_previous & KEYBOARD_LED_NUMLOCK)) {
+            queue.add(Command::num_on);
+        } else if (!(leds & KEYBOARD_LED_NUMLOCK) && (leds_previous & KEYBOARD_LED_NUMLOCK)) {
+            queue.add(Command::num_off);
+        }
+    } else {
+        comms.request_set_leds(leds);
     }
 }
 

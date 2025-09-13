@@ -35,10 +35,12 @@ int main()
 
     Keypad keypad(keypad_in_pins, keypad_out_pins);
     usb_manager manager(t_usb, comms, global_tinyusb_callback, keypad, queue);
-    i2c_worker worker(comms, keypad);
+    i2c_worker worker(comms, keypad, queue);
     flow_selector selector(t_usb, comms, global_tinyusb_callback, manager, worker);
 
-    multicore_launch_core1(core1_main);
+    if constexpr (config::side == config::left) {
+        multicore_launch_core1(core1_main);
+    }
 
     keypad.init_gpio();
     selector.init_all();

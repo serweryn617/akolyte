@@ -8,6 +8,9 @@
 
 ## Building firmware
 
+Prerequisites:
+ - `docker`
+
 Firmware can be built using [cook-builder](https://github.com/serweryn617/cook):
 
 **Setup:** initialize submodules and build Docker image. Has to be run only once:
@@ -16,7 +19,7 @@ Firmware can be built using [cook-builder](https://github.com/serweryn617/cook):
 cook setup
 ```
 
-**Build:** build everything. Output files will be copied to the repository top level:
+**Build:** build everything. Output files will be copied to the `output` directory:
 
 ```bash
 cook

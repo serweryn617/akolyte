@@ -2,7 +2,7 @@
 #define LIB_KEYPAD_KEYPAD_HPP
 
 #include "pico/stdlib.h"
-#include "defs/defs.hpp"
+#include "defs/base.hpp"
 #include <array>
 
 namespace lib::keypad {

@@ -21,25 +21,16 @@ void flow_selector::start()
     uint64_t timestamp = time_us_64();
 
     while (true) {
-        uint8_t message_none = 0;
-        // queue_add_blocking(&inter_core_queue, &message_none);
-
         tiny_usb.device_task();
         tiny_usb.hid_task();
 
         if (tiny_usb.ready()) {
-            uint8_t message = 1;
-            // queue_add_blocking(&inter_core_queue, &message);
-
             comms.set_slave_mode(false);
             manager.loop();
             comms.set_slave_mode(true);
         }
 
         if (comms.slave_requested()) {
-            uint8_t message = 2;
-            // queue_add_blocking(&inter_core_queue, &message);
-
             worker.loop();
         }
 

@@ -1,21 +1,41 @@
 #ifndef LIB_COMMUNICATION_COMMUNICATION_HPP
 #define LIB_COMMUNICATION_COMMUNICATION_HPP
 
+#include <optional>
+#include <span>
 #include "pico/stdlib.h"
 #include "i2c/i2c_driver.h"
 
 namespace lib::communication {
 
-enum class command : uint8_t {
+enum class command_type : uint8_t {
     none,
     capture_keys,
+    set_layer,
+    set_leds,
+};
+
+class command
+{
+private:
+    command_type type = command_type::none;
+    std::span<uint8_t> payload;
+
+public:
+    command(command_type _type, std::span<uint8_t> _payload)
+        : type(_type)
+        , payload(_payload)
+    {}
+
+    command_type get_type();
+    std::span<uint8_t> get_payload();
 };
 
 class communication
 {
 private:
     drivers::i2c::I2CDriver &i2c_driver;
-    uint8_t* command_buffer = nullptr;
+    uint8_t* m_command_buffer = nullptr;
 
 public:
     communication(drivers::i2c::I2CDriver &_i2c_driver);
@@ -30,7 +50,9 @@ public:
     void slave_write_byte(uint8_t byte);
 
     void request_capture_keys();
-    command get_command();
+    void request_set_layer(uint8_t layer);
+    void request_set_leds(uint8_t leds);
+    std::optional<command> get_command();
 };
 
 }  // namespace lib::communication

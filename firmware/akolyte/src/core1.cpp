@@ -59,8 +59,13 @@ void core1_main()
         }
 
         oled.set_cursor(0, 0);
-
         oled.print_string(layers[layer].name, 16);
+
+        oled.set_cursor(0, 16);
+        oled.print_indicator(num_lock, 16);
+        oled.print_string("Num ", 16);
+        oled.print_indicator(caps_lock, 16);
+        oled.print_string("Caps", 16);
 
         oled.display();
         sleep_ms(10);
